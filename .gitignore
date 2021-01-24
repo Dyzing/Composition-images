@@ -1,6 +1,14 @@
 
 *.opendb
 *.db
-*.db
+*.pdb
+*.suo
+*.db-shm
 *.log
+*.tlog
+*.lastbuildstate
+*.recipe
+*.obj
+*.idb
+*.ilk
 Composition-images/.vs/Composition-images/v16/.suo

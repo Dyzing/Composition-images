@@ -4,7 +4,9 @@
 #include <iostream>
 #include <jpeglib.h>
 #include <stdio.h>
+#include <corona.h>
 
+int  c;
 FILE* stream, * stream2;
 int main(int argc, char* argv[])
 {
@@ -13,6 +15,14 @@ int main(int argc, char* argv[])
     if (err == 0)
     {
         printf("The file 'crt_fopen_s.c' was opened\n");
+    }
+    if (stream)
+    {
+        while ((c = getc(stream)) != EOF)
+        {
+            putchar(c);
+        }
+        fclose(stream);
     }
 	//jpeg_stdio_dest(&cinfo, outfile);
     return 0;

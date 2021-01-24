@@ -18,6 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="corona.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -88,13 +91,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\cedri\Documents\Proj\Composition-images\Composition-images\Composition-images\Lib\SDL2-2.0.14\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\corona-1.0.2-vc6\include;D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\jpeg-6b</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\corona-1.0.2-vc6\lib;D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\jpeg-6b;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>corona.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,13 +144,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Composition-images.cpp">
-      <AdditionalUsingDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Lib\jpeg-6b</AdditionalIncludeDirectories>
-    </ClCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

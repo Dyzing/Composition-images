@@ -91,12 +91,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\corona-1.0.2-vc6\include;D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\jpeg-6b</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Lib\corona-1.0.2-vc6\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\corona-1.0.2-vc6\lib;D:\ESGI\C++ Traitement images\Composition-images\Composition-images\Composition-images\Lib\jpeg-6b;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Lib\corona-1.0.2-vc6\lib;Lib\jpeg-6b;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>corona.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

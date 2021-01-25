@@ -86,6 +86,48 @@ std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 
 	return tabPixels;
 }
+
+Pixels** median_images(std::list<Pixels**> images, int width, int height) {
+
+	Pixels** tab = init(width, height);
+	std::list<int> valR;
+	std::list<int> valG;
+	std::list<int> valB;
+	int n;
+	Pixels p;
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			n = 0;
+			valR = {};
+			valG = {};
+			valB = {};
+			std::list<int>::iterator it;
+			for (Pixels** pixels : images) {
+				n += 1;
+				p = pixels[i][j];
+				valR.push_back(p.red);
+				valG.push_back(p.green);
+				valB.push_back(p.blue);
+			}
+			valR.sort();
+			valG.sort();
+			valB.sort();
+			n /= 2;
+			it = valR.begin();
+			std::advance(it, n);
+			tab[i][j].red = *it;
+			it = valG.begin();
+			std::advance(it, n);
+			tab[i][j].green = *it;
+			it = valB.begin();
+			std::advance(it, n);
+			tab[i][j].blue = *it;
+		}
+	}
+	return tab;
+}
+
+
 int main(int argc, char* argv[])
 {	
 	corona::Image** tabImage = initImage(argc-1, argv);
@@ -93,8 +135,8 @@ int main(int argc, char* argv[])
 	
 	corona::Image* image = tabImage[3];
 	
-	Pixels** tab = tabPixels.back();
-	
+	//Pixels** tab = tabPixels.back();
+	Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
 	
 	
 	corona::Image*  imagecop =	corona::CloneImage(image);

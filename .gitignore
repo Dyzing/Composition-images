@@ -12,3 +12,6 @@
 *.idb
 *.ilk
 Composition-images/.vs/Composition-images/v16/.suo
+*.db
+*.db-shm
+*.ipch

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <list>
+#include <cmath>
 struct Pixels {
 
 	int red;
@@ -139,6 +140,7 @@ int main(int argc, char* argv[])
 	Pixels** tab1 = init(width, height);
 	Pixels** tab2 = init(width, height);
 
+	Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
 
 
 
@@ -160,9 +162,9 @@ int main(int argc, char* argv[])
 	Pixels** tab3 = init(width, height);
 	for (int i = 0; i < width; ++i) {
 		for (int j = 0; j < height; ++j) {
-			tab3[i][j].red = tab2[i][j].red - tab1[i][j].red;
-			tab3[i][j].green = tab2[i][j].green - tab1[i][j].green;
-			tab3[i][j].blue = tab2[i][j].blue - tab1[i][j].blue;
+			tab3[i][j].red = std::abs(tab[i][j].red - tabPixels.front()[i][j].red);
+			tab3[i][j].green = std::abs(tab[i][j].green - tabPixels.front()[i][j].green);
+			tab3[i][j].blue = std::abs(tab[i][j].blue - tabPixels.front()[i][j].blue);
 			//tab3[i][j].alpha = tab2[i][j].alpha - tab1[i][j].alpha;
 		}
 	}
@@ -178,7 +180,6 @@ int main(int argc, char* argv[])
 	corona::Image* image = tabImage[3];
 	
 	//Pixels** tab = tabPixels.back();
-	Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
 	
 	
 	corona::Image*  imagecop =	corona::CloneImage(image);

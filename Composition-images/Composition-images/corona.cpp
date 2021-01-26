@@ -93,6 +93,60 @@ std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 	return tabPixels;
 }
 
+Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
+
+	Pixels** tab = init(width, height);
+	std::list<int> valR;
+	std::list<int> valG;
+	std::list<int> valB;
+	int lenght;
+	std::list<int>::iterator it;
+
+	for (int i = 0; i < width; i++) {
+
+		for (int j = 0; j < height; j++) {
+
+			valR = {};
+			valG = {};
+			valB = {};
+
+			for (int k = -radius; k < radius + 1; k++) {
+
+				if (!(i + k > width - 1 || i + k < 0)) {
+
+					for (int n = -radius; n < radius + 1; n++) {
+
+						if (!(j + n > height - 1 || j + n < 0)) {
+
+							valR.push_back(image[i + k][j + n].red);
+							valG.push_back(image[i + k][j + n].green);
+							valB.push_back(image[i + k][j + n].blue);
+
+						}
+					}
+				}
+			}
+
+			valR.sort();
+			valG.sort();
+			valB.sort();
+			lenght = valR.size();
+
+			it = valR.begin();
+			std::advance(it, lenght / 2);
+			tab[i][j].red = *it;
+			it = valG.begin();
+			std::advance(it, lenght / 2);
+			tab[i][j].green = *it;
+			it = valB.begin();
+			std::advance(it, lenght / 2);
+			tab[i][j].blue = *it;
+		}
+	}
+
+	return tab;
+}
+
 Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 
 	Pixels** tab = init(width, height);
@@ -145,41 +199,47 @@ int main(int argc, char* argv[])
 	Pixels** tab1 = init(width, height);
 	Pixels** tab2 = init(width, height);
 
-	Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
+	//Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
 
 
 
-	corona::Image* imagecop2 = corona::CloneImage(tabImage[0]);
-	TabToPixels(tab2, imagecop2);
+	//corona::Image* imagecop2 = corona::CloneImage(tabImage[0]);
+	//TabToPixels(tab2, imagecop2);
 
-	for (int i = 0; i < width; ++i) {
-		for (int j = 0; j < height; ++j) {
-			if (j == height / 2)
-			{
-				tab1[i][j] = { 255,0,0,255 };
-			}
-		}
-	}
+	//for (int i = 0; i < width; ++i) {
+	//	for (int j = 0; j < height; ++j) {
+	//		if (j == height / 2)
+	//		{
+	//			tab1[i][j] = { 255,0,0,255 };
+	//		}
+	//	}
+	//}
 
-	corona::Image* imagecop1 = corona::CloneImage(tabImage[0]);
-	TabToPixels(tab1, imagecop1);
+	//corona::Image* imagecop1 = corona::CloneImage(tabImage[0]);
+	//TabToPixels(tab1, imagecop1);
 
-	Pixels** tab3 = init(width, height);
-	for (int i = 0; i < width; ++i) {
-		for (int j = 0; j < height; ++j) {
-			tab3[i][j].red = std::abs(tab[i][j].red - tabPixels.front()[i][j].red);
-			tab3[i][j].green = std::abs(tab[i][j].green - tabPixels.front()[i][j].green);
-			tab3[i][j].blue = std::abs(tab[i][j].blue - tabPixels.front()[i][j].blue);
-			//tab3[i][j].alpha = tab2[i][j].alpha - tab1[i][j].alpha;
-		}
-	}
+	//Pixels** tab3 = init(width, height);
+	//for (int i = 0; i < width; ++i) {
+	//	for (int j = 0; j < height; ++j) {
+	//		tab3[i][j].red = std::abs(tab[i][j].red - tabPixels.front()[i][j].red);
+	//		tab3[i][j].green = std::abs(tab[i][j].green - tabPixels.front()[i][j].green);
+	//		tab3[i][j].blue = std::abs(tab[i][j].blue - tabPixels.front()[i][j].blue);
+	//		//tab3[i][j].alpha = tab2[i][j].alpha - tab1[i][j].alpha;
+	//	}
+	//}
 
-	corona::Image* imagecop3 = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	/*corona::Image* imagecop3 = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 	TabToPixels(tab3, imagecop3);
 
 	corona::SaveImage("../Photos/imagecop1.jpg", corona::FileFormat::FF_PNG, imagecop1);
 	corona::SaveImage("../Photos/imagecop2.jpg", corona::FileFormat::FF_PNG, imagecop2);
-	corona::SaveImage("../Photos/imagecop3.jpg", corona::FileFormat::FF_PNG, imagecop3);
+	corona::SaveImage("../Photos/imagecop3.jpg", corona::FileFormat::FF_PNG, imagecop3);*/
+
+	
+	Pixels** filtreMedian = filtre_median(ImageToPixels(corona::OpenImage("../Photos/imagecop3.jpg", corona::PF_R8G8B8A8)), width, height, 2);
+	corona::Image* imageFiltreMedian = corona::CloneImage(tabImage[0]);
+	TabToPixels(filtreMedian, imageFiltreMedian);
+	corona::SaveImage("../Photos/FiltreMedian.jpg", corona::FileFormat::FF_PNG, imageFiltreMedian);
 
 	
 	corona::Image* image = tabImage[3];
@@ -188,7 +248,7 @@ int main(int argc, char* argv[])
 	
 	
 	corona::Image*  imagecop =	corona::CloneImage(image);
-	TabToPixels(tab, imagecop);
-	corona::SaveImage("../Photos/coucou.jpg", corona::FileFormat::FF_PNG, imagecop);
+	//TabToPixels(tab, imagecop);
+	//corona::SaveImage("../Photos/coucou.jpg", corona::FileFormat::FF_PNG, imagecop);
 
 }

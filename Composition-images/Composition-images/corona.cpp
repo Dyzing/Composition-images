@@ -58,7 +58,27 @@ corona::Image** initImage(int n, char* arguments[]) {
 
 	return tabImage;
 }
-
+Pixels** ImageToPixels(corona::Image* img) {
+	int width = img->getWidth();
+	int height = img->getHeight();
+	void* pixels = img->getPixels();
+	Pixels** tab = init(width, height);
+	int red, green, blue, alpha;
+	byte* p;
+	// we're guaranteed that the first eight bits of every pixel is red,
+	// the next eight bits is green, and so on...
+	p = (byte*)pixels;
+	for (int x = 0; x < width; ++x) {
+		for (int j = 0; j < height; ++j) {
+			red = *p++;
+			green = *p++;
+			blue = *p++;
+			alpha = *p++;
+			tab[x][j] = { red,green,blue,alpha };
+		}
+	}
+	return tab;
+}
 std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 	std::list<Pixels**> tabPixels;
 	void* pixels;
@@ -66,22 +86,7 @@ std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 	byte* p;
 	int width, height, red, green, blue, alpha;
 	for (int i = 0; i < taille; ++i) {
-		width = tabImg[i]->getWidth();
-		height = tabImg[i]->getHeight();
-		pixels = tabImg[i]->getPixels();
-		tab = init(width,height);
-		// we're guaranteed that the first eight bits of every pixel is red,
-		// the next eight bits is green, and so on...
-		p = (byte*)pixels;
-		for (int x = 0; x < width; ++x) {
-			for (int j = 0; j < height; ++j) {
-				red = *p++;
-				green = *p++;
-				blue = *p++;
-				alpha = *p++;
-				tab[x][j] = { red,green,blue,alpha };
-			}
-		}
+		tab = ImageToPixels(tabImg[i]);
 		tabPixels.push_back(tab);
 	}
 

@@ -194,21 +194,47 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
 /// <param name="Masque">Masque correspondant au sujet sur l'image de base</param>
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
-void AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height) {
-
+Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height) {
+	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			if (Masque[i][j].red > 0)
-				Fond[i][j].red = ImgBase[i][j].red;
-			if (Masque[i][j].green > 0)
-				Fond[i][j].green = ImgBase[i][j].green;
-			if (Masque[i][j].blue > 0)
-				Fond[i][j].blue = ImgBase[i][j].blue;
+			if (Masque[i][j].red > 20)
+				tabFinal[i][j].red = ImgBase[i][j].red;
+			else
+				tabFinal[i][j].red = Fond[i][j].red;
+			if (Masque[i][j].green > 20)
+				tabFinal[i][j].green = ImgBase[i][j].green;
+			else
+				tabFinal[i][j].green = Fond[i][j].green;
+			if (Masque[i][j].blue > 20)
+				tabFinal[i][j].blue = ImgBase[i][j].blue;
+			else
+				tabFinal[i][j].blue = Fond[i][j].blue;
 
 		}
 	}
+	return tabFinal;
 }
+/// <summary>
+/// Fonction appliquant tout les masques correspondant aux images passés en paramètre
+/// </summary>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Résultat final comportant le fond + les sujets</returns>
+Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, int width, int height) {
+	Pixels** masque;
+	Pixels** resFinal = Mediane;
+	Pixels** tmp;
+	corona::Image* img = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	for (Pixels** tab : tabPixels) {
+		masque = CreationMasque(Mediane, tab, width, height);
+		resFinal = AppliquerMasque(resFinal, tab, masque, width, height);
+	}
 
+	return resFinal;
+}
 int main(int argc, char* argv[])
 {	
 	corona::Image** tabImage = initImage(argc-1, argv); // Tableau comportant la liste d'images passé en paramètres
@@ -218,17 +244,19 @@ int main(int argc, char* argv[])
 	int height = tabImage[0]->getHeight(); //Hauteur
 
 	Pixels** firstTab = tabPixels.front();
-	Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la médiane
-	corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(Mediane, MedianeImg);
-	corona::SaveImage("../Photos/Mediane.jpg", corona::FileFormat::FF_PNG, MedianeImg);
-	//corona::Image* MedianeImg = corona::OpenImage("../Photos/MasqueAppliquer.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
-	//Pixels** Mediane = ImageToPixels(MedianeImg);
-	Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
-	AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
-
+	//Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la médiane
+	//corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	//TabToPixels(Mediane, MedianeImg);
+	//corona::SaveImage("../Photos/Mediane.jpg", corona::FileFormat::FF_PNG, MedianeImg);
+	corona::Image* MedianeImg = corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
+	Pixels** Mediane = ImageToPixels(MedianeImg);
+	
+	//Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
+	//AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
+	
+	Pixels** MedianeAndMasque = MultiMasque(Mediane, tabPixels, width, height);
 	corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(Mediane, MasqueAppliquer);
+	TabToPixels(MedianeAndMasque, MasqueAppliquer);
 
 	corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
 

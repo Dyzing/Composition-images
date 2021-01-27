@@ -20,6 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="corona.cpp" />
+    <ClCompile Include="Filtres.cpp" />
+    <ClCompile Include="Initialisation-Conversion.cpp" />
+    <ClCompile Include="Masques.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="corona.hpp" />
+    <ClInclude Include="Filtres.hpp" />
+    <ClInclude Include="Initialisation-Conversion.hpp" />
+    <ClInclude Include="Masques.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

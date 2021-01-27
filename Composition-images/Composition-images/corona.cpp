@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <list>
 #include <cmath>
+/// <summary>
+/// Structure d'un pixel en RGBA
+/// </summary>
 struct Pixels {
 
 	int red;
@@ -12,29 +15,38 @@ struct Pixels {
 
 };
 typedef unsigned char byte;
-
+/// <summary>
+/// Initialisation d'un tableau
+/// </summary>
+/// <param name="hauteur"></param>
+/// <param name="largeur"></param>
+/// <returns></returns>
 Pixels** init(int largeur, int hauteur) {
-	Pixels** tab = new Pixels * [largeur];
+	Pixels** tab = new Pixels * [hauteur];
 	Pixels* tab2 = new Pixels[hauteur * largeur];
 	for (int i = 0; i < largeur; i++) {
 		tab[i] = &tab2[i * hauteur];
 
-		for (int j = 0; j < hauteur; j++) {
-			tab[i][j] = { 0,0,255,255 };
+		for (int j = 0; j < largeur; j++) {
+			tab[i][j] = { 0,0,0,255 };
 		}
 	}
 
 	return tab;
 }
-
+/// <summary>
+/// Transfert le tableau de pixels dans l'image
+/// </summary>
+/// <param name="pix">Tableau de pixels</param>
+/// <param name="img">Image qui recevra le tableau de pixels</param>
 void TabToPixels(Pixels** pix, corona::Image* img) {
 	int width = img->getWidth();
 	int height = img->getHeight();
 	void* p = img->getPixels();
 	Pixels tmp;
 	byte* iter = (byte*)p;
-	for (int i = 0; i < width; ++i) {
-		for (int j = 0; j < height; ++j) {
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
 			tmp = pix[i][j];
 			*iter = tmp.red;
 			*iter++;
@@ -47,7 +59,12 @@ void TabToPixels(Pixels** pix, corona::Image* img) {
 		}
 	}
 }
-
+/// <summary>
+/// Récupération de la liste d'image passé en paramètres
+/// </summary>
+/// <param name="n">Nombre d'image</param>
+/// <param name="arguments">chemin des images</param>
+/// <returns>Tableau comportant toutes les images</returns>
 corona::Image** initImage(int n, char* arguments[]) {
 	corona::Image* img;
 	corona::Image** tabImage = new corona::Image * [n];
@@ -58,6 +75,11 @@ corona::Image** initImage(int n, char* arguments[]) {
 
 	return tabImage;
 }
+/// <summary>
+/// Convertit une image en tableau de pixels
+/// </summary>
+/// <param name="img">Image a convertir</param>
+/// <returns>Tableau de pixels</returns>
 Pixels** ImageToPixels(corona::Image* img) {
 	int width = img->getWidth();
 	int height = img->getHeight();
@@ -68,8 +90,8 @@ Pixels** ImageToPixels(corona::Image* img) {
 	// we're guaranteed that the first eight bits of every pixel is red,
 	// the next eight bits is green, and so on...
 	p = (byte*)pixels;
-	for (int x = 0; x < width; ++x) {
-		for (int j = 0; j < height; ++j) {
+	for (int x = 0; x < height; ++x) {
+		for (int j = 0; j < width; ++j) {
 			red = *p++;
 			green = *p++;
 			blue = *p++;
@@ -79,6 +101,12 @@ Pixels** ImageToPixels(corona::Image* img) {
 	}
 	return tab;
 }
+/// <summary>
+/// Initialisation des tableaux correspondant a la liste d'images
+/// </summary>
+/// <param name="taille">Nombre d'images</param>
+/// <param name="tabImg">Liste d'images</param>
+/// <returns>Liste des tableaux de pixels</returns>
 std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 	std::list<Pixels**> tabPixels;
 	void* pixels;
@@ -92,7 +120,13 @@ std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 
 	return tabPixels;
 }
-
+/// <summary>
+/// Creation de la médiane / extraction du sujet des images
+/// </summary>
+/// <param name="images">Liste d'image</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns></returns>
 Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 
 	Pixels** tab = init(width, height);
@@ -101,8 +135,8 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 	std::list<int> valB;
 	int n;
 	Pixels p;
-	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
 			n = 0;
 			valR = {};
 			valG = {};
@@ -132,7 +166,54 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 	}
 	return tab;
 }
+/// <summary>
+/// Creation du masque correspondant au sujet de l'image
+/// </summary>
+/// <param name="Fond">Fond de l'image sans le sujet</param>
+/// <param name="Image">Image où seras extrait le sujet</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Retourne le masque</returns>
+Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
+	Pixels** tabFinal = init(width, height);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			tabFinal[i][j].red = std::abs(Fond[i][j].red - Image[i][j].red);
+			tabFinal[i][j].green = std::abs(Fond[i][j].green - Image[i][j].green);
+			tabFinal[i][j].blue = std::abs(Fond[i][j].blue - Image[i][j].blue);
+		}
+	}
 
+	return tabFinal;
+}
+/// <summary>
+/// Permet l'application du masque à partir de l'image de base sur le Fond
+/// </summary>
+/// <param name="Fond">Fond de l'image sans le sujet</param>
+/// <param name="ImgBase">Image de base comportant le fond et le sujet</param>
+/// <param name="Masque">Masque correspondant au sujet sur l'image de base</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height) {
+	Pixels** tabFinal = init(width, height);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if (Masque[i][j].red > 10)
+				tabFinal[i][j].red = ImgBase[i][j].red;
+			else
+				tabFinal[i][j].red = Fond[i][j].red;
+			if (Masque[i][j].green > 10)
+				tabFinal[i][j].green = ImgBase[i][j].green;
+			else
+				tabFinal[i][j].green = Fond[i][j].green;
+			if (Masque[i][j].blue > 10)
+				tabFinal[i][j].blue = ImgBase[i][j].blue;
+			else
+				tabFinal[i][j].blue = Fond[i][j].blue;
+		}
+	}
+	return tabFinal;
+}
 
 Pixels** flou_glaussien(corona::Image* img, int radius)
 {
@@ -310,67 +391,93 @@ Pixels** test(corona::Image* img, int radius)
 }
 
 
+/// <summary>
+/// Fonction appliquant tout les masques correspondant aux images passés en paramètre
+/// </summary>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Résultat final comportant le fond + les sujets</returns>
+Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, int width, int height) {
+	Pixels** masque;
+	Pixels** resFinal = Mediane;
+	Pixels** tmp;
+	corona::Image* img = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	for (Pixels** tab : tabPixels) {
+		masque = CreationMasque(Mediane, tab, width, height);
+		resFinal = AppliquerMasque(resFinal, tab, masque, width, height);
+	}
 
+	return resFinal;
+}
 
+struct PixelsFloat {
 
+	float red;
+	float green;
+	float blue;
+	float alpha;
+};
+Pixels** FlouGaussien(Pixels** img,int width, int height) {
+	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(img, cop);
+	Pixels** pix = ImageToPixels(cop);
+	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
+	PixelsFloat sumVois = { 0,0,0,255 };
+	for (int x = 2; x < height - 2; x++) {
+		for (int y = 2; y < width - 2; y++) {
+			sumVois = { 0,0,0,255 };
+			for (int xvois = x - 2; xvois < x + 3; xvois++) {
+				if (xvois >= 0 and xvois < height) {
+					for (int yvois = y - 2; yvois < y + 3; yvois++) {
+						if (yvois >= 0 and yvois < width) {
+							sumVois.red = sumVois.red + img[xvois][yvois].red  * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+							sumVois.green = sumVois.green + img[xvois][yvois].green* (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+							sumVois.blue = sumVois.blue + img[xvois][yvois].blue  * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+
+						}
+					}
+				}
+			}
+			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue ,(int)sumVois.alpha };
+			
+		}
+	}
+
+	return pix;
+}
 int main(int argc, char* argv[])
 {	
-	corona::Image** tabImage = initImage(argc-1, argv);
-	std::list<Pixels**> tabPixels = initTabPixels(argc-1, tabImage);
+	corona::Image** tabImage = initImage(argc-1, argv); // Tableau comportant la liste d'images passé en paramètres
+	std::list<Pixels**> tabPixels = initTabPixels(argc-1, tabImage); //Liste comportant les tableaux correspondants aux images
 
-	int width = tabImage[0]->getWidth();
-	int height = tabImage[0]->getHeight();
+	int width = tabImage[0]->getWidth(); //Largeur
+	int height = tabImage[0]->getHeight(); //Hauteur
 
-	Pixels** tab1 = init(width, height);
-	Pixels** tab2 = init(width, height);
+	Pixels** firstTab = tabPixels.front();
+	Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la médiane
+	Mediane = FlouGaussien(Mediane, width, height);
+	corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(Mediane, MedianeImg);
+	corona::SaveImage("../Photos/MedianeWithBlur.jpg", corona::FileFormat::FF_PNG, MedianeImg);
+	//corona::Image* MedianeImg = corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
+	//Pixels** Mediane = ImageToPixels(MedianeImg);
+	//Mediane = FlouGaussien(Mediane, width, height);
+	Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
+	//AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
+	
+	//Pixels** MedianeAndMasque = MultiMasque(Mediane, tabPixels, width, height);
 
-	//Pixels** tab = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
-
-	//Pixels**  tab_flou = flou_glaussien(tabImage[0], 2);
-	Pixels** tab_flou_moyen = flou_moyen(tabImage[0], 2);
-	Pixels** testab = test(tabImage[0], 2);
-
-	corona::Image* imagecop2 = corona::CloneImage(tabImage[0]);
-	TabToPixels(tab2, imagecop2);
-
-	for (int i = 0; i < width; ++i) {
-		for (int j = 0; j < height; ++j) {
-			if (j == height / 2)
-			{
-				tab1[i][j] = { 255,0,0,255 };
-			}
-		}
-	}
-
-	corona::Image* imagecop1 = corona::CloneImage(tabImage[0]);
-	TabToPixels(tab1, imagecop1);
-
-	Pixels** tab3 = init(width, height);
-	for (int i = 0; i < width; ++i) {
-		for (int j = 0; j < height; ++j) {
-			tab3[i][j].red = std::abs(tab1[i][j].red - testab[i][j].red);
-			tab3[i][j].green = std::abs(tab1[i][j].green - testab[i][j].green);
-			tab3[i][j].blue = std::abs(tab1[i][j].blue - testab[i][j].blue);
-			//tab3[i][j].alpha = tab2[i][j].alpha - tab1[i][j].alpha;
-		}
-	}
-
-	corona::Image* imagecop3 = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(tab3, imagecop3);
-
-	corona::SaveImage("../Photos/imagecop1.jpg", corona::FileFormat::FF_PNG, imagecop1);
-	corona::SaveImage("../Photos/imagecop2.jpg", corona::FileFormat::FF_PNG, imagecop2);
-	corona::SaveImage("../Photos/imagecop3.jpg", corona::FileFormat::FF_PNG, imagecop3);
-
+	Pixels** MedianeAndMasque = AppliquerMasque(Mediane, firstTab, Masque, width, height);
+	//MedianeAndMasque = FlouGaussien(Mediane, width, height);
+	corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(Masque, MasqueAppliquer);
 	
 	corona::Image* image = tabImage[3];
 	
 	//Pixels** tab = tabPixels.back();
-	
-	
-	
-	corona::Image*  imagecop =	corona::CloneImage(image);
-	TabToPixels(tab1, imagecop);
-	corona::SaveImage("../Photos/coucou.jpg", corona::FileFormat::FF_PNG, imagecop);
+
+	corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
 
 }

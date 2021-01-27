@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <list>
 #include <cmath>
+#include<vector>
+#include <algorithm>
 /// <summary>
 /// Structure d'un pixel en RGBA
 /// </summary>
@@ -24,8 +26,8 @@ typedef unsigned char byte;
 Pixels** init(int largeur, int hauteur) {
 	Pixels** tab = new Pixels * [hauteur];
 	Pixels* tab2 = new Pixels[hauteur * largeur];
-	for (int i = 0; i < largeur; i++) {
-		tab[i] = &tab2[i * hauteur];
+	for (int i = 0; i < hauteur; i++) {
+		tab[i] = &tab2[i * largeur];
 
 		for (int j = 0; j < largeur; j++) {
 			tab[i][j] = { 0,0,0,255 };
@@ -130,9 +132,9 @@ std::list<Pixels**> initTabPixels(int taille, corona::Image** tabImg) {
 Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 
 	Pixels** tab = init(width, height);
-	std::list<int> valR;
-	std::list<int> valG;
-	std::list<int> valB;
+	std::vector<int> valR;
+	std::vector<int> valG;
+	std::vector<int> valB;
 	int n;
 	Pixels p;
 	for (int i = 0; i < height; i++) {
@@ -149,9 +151,13 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 				valG.push_back(p.green);
 				valB.push_back(p.blue);
 			}
-			valR.sort();
+			std::sort(valR.begin(), valR.end());
+			std::sort(valG.begin(), valG.end());
+			std::sort(valB.begin(), valB.end());
+			/*valR.sort();
 			valG.sort();
 			valB.sort();
+
 			n /= 2;
 			it = valR.begin();
 			std::advance(it, n);
@@ -162,10 +168,166 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 			it = valB.begin();
 			std::advance(it, n);
 			tab[i][j].blue = *it;
+			*/
+			
+			tab[i][j].red = valR[valR.size() / 2];
+			tab[i][j].green = valR[valG.size() / 2];
+			tab[i][j].blue = valR[valB.size() / 2];
+			
 		}
 	}
 	return tab;
 }
+
+
+
+struct PixelsFloat {
+
+	float red;
+	float green;
+	float blue;
+	float alpha;
+};
+Pixels** FlouGaussien(Pixels** img, int width, int height) {
+	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(img, cop);
+	Pixels** pix = ImageToPixels(cop);
+	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
+	PixelsFloat sumVois = { 0,0,0,255 };
+	for (int x = 2; x < height - 2; x++) {
+		for (int y = 2; y < width - 2; y++) {
+			sumVois = { 0,0,0,255 };
+			for (int xvois = x - 2; xvois < x + 3; xvois++) {
+				if (xvois >= 0 and xvois < height) {
+					for (int yvois = y - 2; yvois < y + 3; yvois++) {
+						if (yvois >= 0 and yvois < width) {
+							sumVois.red = sumVois.red + img[xvois][yvois].red * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+							sumVois.green = sumVois.green + img[xvois][yvois].green * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+							sumVois.blue = sumVois.blue + img[xvois][yvois].blue * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
+
+						}
+					}
+				}
+			}
+			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue ,(int)sumVois.alpha };
+
+		}
+	}
+
+	return pix;
+}
+
+Pixels** flou_glaussien(corona::Image* img, int radius)
+{
+	corona::Image* image_floutee = corona::CloneImage(img);
+	Pixels** tab2 = ImageToPixels(image_floutee);
+	Pixels** tab = ImageToPixels(img);
+	int height = img->getHeight();
+	int width = img->getWidth();
+	int borne_inf_x, borne_inf_y, borne_sup_x, borne_sup_y, iterateur;
+	float somme_rgb_pond_red, somme_rgb_pond_green, somme_rgb_pond_blue;
+	float tabconvo[] = { 1, 4, 7, 4, 1, 4, 16, 26, 16, 4, 7, 26, 41, 26, 7, 4, 16, 26, 16, 4, 1, 4, 7, 4, 1 };
+
+	for (size_t i = 2; i < height - 2; i++)
+	{
+		for (size_t j = 2; j < width - 2; j++)
+		{
+			borne_inf_x = i - radius;
+			borne_sup_x = i + radius + 1;
+			borne_inf_y = j - radius;
+			borne_sup_y = j + radius + 1;
+
+			if (borne_inf_x < 0)
+				borne_inf_x = 0;
+			if (borne_sup_x > height)
+				borne_sup_x = height;
+			if (borne_inf_y < 0)
+				borne_inf_y = 0;
+			if (borne_sup_y > width)
+				borne_sup_y = width;
+
+			somme_rgb_pond_red = 0;
+			somme_rgb_pond_green = 0;
+			somme_rgb_pond_blue = 0;
+			iterateur = 0;
+
+			for (size_t x = borne_inf_x; x < borne_sup_x; x++)
+			{
+				for (size_t y = borne_inf_y; y < borne_sup_y; y++)
+				{
+					somme_rgb_pond_red += tabconvo[iterateur] / 273.0f * tab[x][y].red;
+					somme_rgb_pond_green += tabconvo[iterateur] / 273.0f * tab[x][y].green;
+					somme_rgb_pond_blue += tabconvo[iterateur] / 273.0f * tab[x][y].blue;
+					++iterateur;
+				}
+			}
+			tab2[i][j].red = (int)somme_rgb_pond_red;
+			tab2[i][j].green = (int)somme_rgb_pond_green;
+			tab2[i][j].blue = (int)somme_rgb_pond_blue;
+		}
+	}
+	TabToPixels(tab2, image_floutee);
+	corona::SaveImage("../Photos/image_floutee_gaussien.jpg", corona::FileFormat::FF_PNG, image_floutee);
+	return tab2;
+}
+
+
+Pixels** flou_moyen(corona::Image* img, int radius)
+{
+	int height = img->getHeight();
+	int width = img->getWidth();
+	corona::Image* image_floutee_moyen = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	Pixels** tab2 = ImageToPixels(image_floutee_moyen); //pix2 = cop.load() 					 	 			    	  
+	Pixels** tab = ImageToPixels(img); //pix1 = im.load() 					 	 			    	  
+	int borne_inf_x, borne_inf_y, borne_sup_x, borne_sup_y, iterateur;
+	float somme_rgb_pond_red, somme_rgb_pond_green, somme_rgb_pond_blue;
+
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			borne_inf_x = i - radius;
+			borne_sup_x = i + radius + 1;
+			borne_inf_y = j - radius;
+			borne_sup_y = j + radius + 1;
+
+			if (borne_inf_x < 0)
+				borne_inf_x = 0;
+			if (borne_sup_x > height)
+				borne_sup_x = height;
+			if (borne_inf_y < 0)
+				borne_inf_y = 0;
+			if (borne_sup_y > width)
+				borne_sup_y = width;
+
+			somme_rgb_pond_red = 0;
+			somme_rgb_pond_green = 0;
+			somme_rgb_pond_blue = 0;
+			iterateur = 0;
+
+			for (int x = borne_inf_x; x < borne_sup_x; x++)
+			{
+				for (int y = borne_inf_y; y < borne_sup_y; y++)
+				{
+					somme_rgb_pond_red += tab[x][y].red;
+					somme_rgb_pond_green += tab[x][y].green;
+					somme_rgb_pond_blue += tab[x][y].blue;
+					++iterateur;
+				}
+			}
+
+			tab2[i][j].red = (int)somme_rgb_pond_red / iterateur;
+			tab2[i][j].green = (int)somme_rgb_pond_green / iterateur;
+			tab2[i][j].blue = (int)somme_rgb_pond_blue / iterateur;
+			tab2[i][j].alpha = 255;
+		}
+	}
+	TabToPixels(tab2, image_floutee_moyen);
+	corona::SaveImage("../Photos/image_floutee_moyen.jpg", corona::FileFormat::FF_PNG, image_floutee_moyen);
+	return tab2;
+}
+
+
 /// <summary>
 /// Creation du masque correspondant au sujet de l'image
 /// </summary>
@@ -175,6 +337,10 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 /// <param name="height">Hauteur</param>
 /// <returns>Retourne le masque</returns>
 Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
+	corona::Image* temp = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(Image, temp);
+	Image = flou_glaussien(temp, 2);
+	//Image = FlouGaussien(Image, width, height);
 	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
@@ -198,15 +364,15 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			if (Masque[i][j].red > 10)
+			if (Masque[i][j].red > 18)
 				tabFinal[i][j].red = ImgBase[i][j].red;
 			else
 				tabFinal[i][j].red = Fond[i][j].red;
-			if (Masque[i][j].green > 10)
+			if (Masque[i][j].green > 18)
 				tabFinal[i][j].green = ImgBase[i][j].green;
 			else
 				tabFinal[i][j].green = Fond[i][j].green;
-			if (Masque[i][j].blue > 10)
+			if (Masque[i][j].blue > 18)
 				tabFinal[i][j].blue = ImgBase[i][j].blue;
 			else
 				tabFinal[i][j].blue = Fond[i][j].blue;
@@ -215,114 +381,6 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 	return tabFinal;
 }
 
-Pixels** flou_glaussien(corona::Image* img, int radius)
-{
-	corona::Image* image_floutee = corona::CloneImage(img);
-	Pixels** tab2 = ImageToPixels(image_floutee);
-	Pixels** tab = ImageToPixels(img);
-	int height = img->getHeight();
-	int width = img->getWidth();
-	int borne_inf_x, borne_inf_y, borne_sup_x, borne_sup_y, iterateur;
-	float somme_rgb_pond_red, somme_rgb_pond_green, somme_rgb_pond_blue;
-	float tabconvo[] = { 1, 4, 7, 4, 1, 4, 16, 26, 16, 4, 7, 26, 41, 26, 7, 4, 16, 26, 16, 4, 1, 4, 7, 4, 1 };
-
-	for (size_t i = 2; i < width - 2; i++)
-	{
-		for (size_t j = 2; j < height - 2; j++)
-		{
-			borne_inf_x = i - radius;
-			borne_sup_x = i + radius + 1;
-			borne_inf_y = j - radius;
-			borne_sup_y = j + radius + 1;
-
-			if (borne_inf_x < 0)
-				borne_inf_x = 0;
-			if (borne_sup_x > width)
-				borne_sup_x = width;
-			if (borne_inf_y < 0)
-				borne_inf_y = 0;
-			if (borne_sup_y > height)
-				borne_sup_y = height;
-
-			somme_rgb_pond_red = 0;
-			somme_rgb_pond_green = 0;
-			somme_rgb_pond_blue = 0;
-			iterateur = 0;
-			
-			for (size_t x = borne_inf_x; x < borne_sup_x; x++)
-			{
-				for (size_t y = borne_inf_y; y < borne_sup_y; y++)
-				{
-					somme_rgb_pond_red += tabconvo[iterateur] / 273.0f * tab[x][y].red;
-					somme_rgb_pond_green += tabconvo[iterateur] / 273.0f * tab[x][y].green;
-					somme_rgb_pond_blue += tabconvo[iterateur] / 273.0f * tab[x][y].blue;
-					++iterateur;
-				}
-			}
-			tab2[i][j].red = (int)somme_rgb_pond_red;
-			tab2[i][j].green = (int)somme_rgb_pond_green;
-			tab2[i][j].blue = (int)somme_rgb_pond_blue;
-		}
-	}
-	TabToPixels(tab2, image_floutee);
-	corona::SaveImage("../Photos/image_floutee.jpg", corona::FileFormat::FF_PNG, image_floutee);
-	return tab2;
-}
-
-Pixels** flou_moyen(corona::Image* img, int radius)
-{
-	int height = img->getHeight();
-	int width = img->getWidth();
-	corona::Image* image_floutee_moyen = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	Pixels** tab2 = ImageToPixels(image_floutee_moyen); //pix2 = cop.load() 					 	 			    	  
-	Pixels** tab = ImageToPixels(img); //pix1 = im.load() 					 	 			    	  
-	int borne_inf_x, borne_inf_y, borne_sup_x, borne_sup_y, iterateur;
-	float somme_rgb_pond_red, somme_rgb_pond_green, somme_rgb_pond_blue;
-
-	for (int i = 0; i < width; i++)
-	{
-		for (int j = 0; j < height; j++)
-		{
-			borne_inf_x = i - radius;
-			borne_sup_x = i + radius + 1;
-			borne_inf_y = j - radius;
-			borne_sup_y = j + radius + 1;
-
-			if (borne_inf_x < 0)
-				borne_inf_x = 0;
-			if (borne_sup_x > width)
-				borne_sup_x = width;
-			if (borne_inf_y < 0)
-				borne_inf_y = 0;
-			if (borne_sup_y > height)
-				borne_sup_y = height;
-
-			somme_rgb_pond_red = 0;
-			somme_rgb_pond_green = 0;
-			somme_rgb_pond_blue = 0;
-			iterateur = 0;
-
-			for (int x = borne_inf_x; x < borne_sup_x; x++)
-			{
-				for (int y = borne_inf_y; y < borne_sup_y; y++)
-				{
-					somme_rgb_pond_red += tab[x][y].red;
-					somme_rgb_pond_green +=  tab[x][y].green;
-					somme_rgb_pond_blue +=  tab[x][y].blue;
-					++iterateur;
-				}
-			}
-
-			tab2[i][j].red = (int)somme_rgb_pond_red / iterateur;
-			tab2[i][j].green = (int)somme_rgb_pond_green / iterateur;
-			tab2[i][j].blue = (int)somme_rgb_pond_blue / iterateur;
-			tab2[i][j].alpha = 255;
-		}
-	}
-	TabToPixels(tab2, image_floutee_moyen);
-	corona::SaveImage("../Photos/image_floutee_moyen.jpg", corona::FileFormat::FF_PNG, image_floutee_moyen);
-	return tab2;
-}
 
 
 Pixels** test(corona::Image* img, int radius)
@@ -335,9 +393,9 @@ Pixels** test(corona::Image* img, int radius)
 	int borne_inf_x, borne_inf_y, borne_sup_x, borne_sup_y, iterateur;
 	float somme_rgb_pond_red, somme_rgb_pond_green, somme_rgb_pond_blue;
 
-	for (int i = 0; i < width; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < height; j++)
+		for (int j = 0; j < width; j++)
 		{
 			borne_inf_x = i - radius;
 			borne_sup_x = i + radius + 1;
@@ -346,12 +404,12 @@ Pixels** test(corona::Image* img, int radius)
 
 			if (borne_inf_x < 0)
 				borne_inf_x = 0;
-			if (borne_sup_x > width)
-				borne_sup_x = width;
+			if (borne_sup_x > height)
+				borne_sup_x = height;
 			if (borne_inf_y < 0)
 				borne_inf_y = 0;
-			if (borne_sup_y > height)
-				borne_sup_y = height;
+			if (borne_sup_y > width)
+				borne_sup_y = width;
 
 			somme_rgb_pond_red = 0;
 			somme_rgb_pond_green = 0;
@@ -412,41 +470,6 @@ Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, int width,
 	return resFinal;
 }
 
-struct PixelsFloat {
-
-	float red;
-	float green;
-	float blue;
-	float alpha;
-};
-Pixels** FlouGaussien(Pixels** img,int width, int height) {
-	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(img, cop);
-	Pixels** pix = ImageToPixels(cop);
-	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
-	PixelsFloat sumVois = { 0,0,0,255 };
-	for (int x = 2; x < height - 2; x++) {
-		for (int y = 2; y < width - 2; y++) {
-			sumVois = { 0,0,0,255 };
-			for (int xvois = x - 2; xvois < x + 3; xvois++) {
-				if (xvois >= 0 and xvois < height) {
-					for (int yvois = y - 2; yvois < y + 3; yvois++) {
-						if (yvois >= 0 and yvois < width) {
-							sumVois.red = sumVois.red + img[xvois][yvois].red  * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
-							sumVois.green = sumVois.green + img[xvois][yvois].green* (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
-							sumVois.blue = sumVois.blue + img[xvois][yvois].blue  * (matConvo[xvois - x + 2][yvois - y + 2] / 273.f);
-
-						}
-					}
-				}
-			}
-			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue ,(int)sumVois.alpha };
-			
-		}
-	}
-
-	return pix;
-}
 int main(int argc, char* argv[])
 {	
 	corona::Image** tabImage = initImage(argc-1, argv); // Tableau comportant la liste d'images passé en paramètres
@@ -457,26 +480,35 @@ int main(int argc, char* argv[])
 
 	Pixels** firstTab = tabPixels.front();
 	Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la médiane
-	Mediane = FlouGaussien(Mediane, width, height);
+	/*Mediane = FlouGaussien(Mediane, width, height);
 	corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 	TabToPixels(Mediane, MedianeImg);
-	corona::SaveImage("../Photos/MedianeWithBlur.jpg", corona::FileFormat::FF_PNG, MedianeImg);
-	//corona::Image* MedianeImg = corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
+	corona::SaveImage("../Photos/MedianeWithBlur.jpg", corona::FileFormat::FF_PNG, MedianeImg);*/
+	corona::Image* MedianeImg = corona::OpenImage("../Photos/MedianeWithBlur.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
+	
+	corona::Image* tempMediane = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(Mediane, tempMediane);
+
+	Pixels** Mediane_flou_moyen = flou_glaussien(tempMediane, 2);
+
 	//Pixels** Mediane = ImageToPixels(MedianeImg);
 	//Mediane = FlouGaussien(Mediane, width, height);
-	Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
+	//Pixels** Masque = CreationMasque(Mediane_flou_moyen, first_image_flou_moyen, width, height); //Creation du masque
 	//AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
 	
-	//Pixels** MedianeAndMasque = MultiMasque(Mediane, tabPixels, width, height);
+	Pixels** MedianeAndMasque = MultiMasque(Mediane_flou_moyen, tabPixels, width, height);
 
-	Pixels** MedianeAndMasque = AppliquerMasque(Mediane, firstTab, Masque, width, height);
+	//Pixels** MedianeAndMasque = AppliquerMasque(Mediane, firstTab, Masque, width, height);
 	//MedianeAndMasque = FlouGaussien(Mediane, width, height);
 	corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(Masque, MasqueAppliquer);
+	TabToPixels(MedianeAndMasque, MasqueAppliquer);
 	
 	corona::Image* image = tabImage[3];
 	
 	//Pixels** tab = tabPixels.back();
+
+	Pixels** image_flou_gaussien = flou_glaussien(tabImage[0], 2);
+
 
 	corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
 

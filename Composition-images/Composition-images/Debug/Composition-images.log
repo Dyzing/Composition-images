@@ -1,10 +1,1 @@
-﻿  corona.cpp
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,13): warning C4101: 'height' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,39): warning C4101: 'alpha' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,6): warning C4101: 'width' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(84,8): warning C4101: 'pixels' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,21): warning C4101: 'red' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(86,8): warning C4101: 'p' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,33): warning C4101: 'blue' : variable locale non référencée
-C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\corona.cpp(87,26): warning C4101: 'green' : variable locale non référencée
-  Composition-images.vcxproj -> C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Debug\Composition-images.exe
+﻿  Composition-images.vcxproj -> C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Debug\Composition-images.exe

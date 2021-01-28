@@ -257,6 +257,7 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 /// <returns>Retourne le masque</returns>
 Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
 	Pixels** tabFinal = init(width, height);
+	Image = filtre_median(Image, width, height, 3);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			tabFinal[i][j].red = std::abs(Fond[i][j].red - Image[i][j].red);
@@ -354,40 +355,6 @@ Pixels** FlouGaussien(Pixels** img,int width, int height) {
 }
 int main(int argc, char* argv[])
 {	
-	//corona::Image* img = corona::OpenImage("../Photos/test.jpg", corona::PF_R8G8B8A8);
-	//int width = img->getWidth(); //Largeur
-	//int height = img->getHeight(); //Hauteur
-
-	//Pixels** filtreMedian = filtre_median(ImageToPixels(img), width, height, 2);
-	//corona::Image* imageFiltreMedian = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	//TabToPixels(filtreMedian, imageFiltreMedian);
-	//corona::SaveImage("../Photos/test_filtremedian.jpg", corona::FileFormat::FF_PNG, imageFiltreMedian);
-
-	//Pixels** firstTab = tabPixels.front();
-	//Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la médiane
-	//corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	//TabToPixels(Mediane, MedianeImg);
-	//corona::SaveImage("../Photos/Mediane.jpg", corona::FileFormat::FF_PNG, MedianeImg);
-
-	////corona::Image* MedianeImg = corona::OpenImage("../Photos/MasqueAppliquer.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image médiane est déjà créée, gain de temps
-	////Pixels** Mediane = ImageToPixels(MedianeImg);
-	//Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
-	//AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
-
-
-
-
-	//corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	//TabToPixels(Mediane, MasqueAppliquer);
-
-	//corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
-
-
-
-	/*Pixels** masque1 = CreationMasque(ImageToPixels(corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8)), ImageToPixels(corona::OpenImage("../Photos/chrono2/chrono21.png", corona::PF_R8G8B8A8)), width, height);
-	corona::Image* imageMasque1 = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(masque1, imageMasque1);
-	corona::SaveImage("../Photos/masque1.jpg", corona::FileFormat::FF_PNG, imageMasque1);*/
 	
 
 	corona::Image** tabImage = initImage(argc-1, argv); // Tableau comportant la liste d'images pass� en param�tres
@@ -406,20 +373,15 @@ int main(int argc, char* argv[])
 	corona::Image* MedianeImg = corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image m�diane est d�j� cr��e, gain de temps
 	Pixels**  Mediane = ImageToPixels(MedianeImg);
 	//Mediane = FlouGaussien(Mediane, width, height);
-	Mediane = filtre_median(Mediane, width, height, 2);
-	firstTab = filtre_median(firstTab, width, height, 2);
+	Mediane = filtre_median(Mediane, width, height, 3);
 	Pixels** Masque = CreationMasque(Mediane, firstTab, width, height); //Creation du masque
 	corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 	TabToPixels(Masque, MasqueAppliquer);
 	corona::SaveImage("../Photos/Masque1.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
-	AppliquerMasque(Mediane, firstTab, Masque, width, height); //Application du masque
 	
 	Pixels** MedianeAndMasque = MultiMasque(Mediane, tabPixels, width, height);
-
-	MedianeAndMasque = AppliquerMasque(Mediane, firstTab, Masque, width, height);
-	MedianeAndMasque = FlouGaussien(Mediane, width, height);
 	
-	TabToPixels(Masque, MasqueAppliquer);
+	TabToPixels(MedianeAndMasque, MasqueAppliquer);
 
 	corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
 

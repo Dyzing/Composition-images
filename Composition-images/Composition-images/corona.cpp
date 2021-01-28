@@ -6,7 +6,8 @@
 int main(int argc, char* argv[])
 {
 	corona::Image** tabImage = initImage(argc - 1, argv); // Tableau comportant la liste d'images passe en parametres
-	std::list<Pixels**> tabPixels = initTabPixels(argc - 1, tabImage); //Liste comportant les tableaux correspondants aux images
+	std::list<Pixels**> tabPixels = initTabPixels(argc - 2, tabImage); //Liste comportant les tableaux correspondants aux images
+	std::string option = argv[1];
 
 	int width = tabImage[0]->getWidth(); //Largeur
 	int height = tabImage[0]->getHeight(); //Hauteur
@@ -31,5 +32,15 @@ int main(int argc, char* argv[])
 	TabToPixels(MedianeAndMasque, MasqueAppliquer);
 	corona::SaveImage("../Photos/MasqueAppliquer.jpg", corona::FileFormat::FF_PNG, MasqueAppliquer);
 
+	//a effacer
+	corona::Image* fading_jpeg_front = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	Pixels** fading_image_front = Fading_front(tabPixels, width, height, Mediane);
+	TabToPixels(fading_image_front, fading_jpeg_front);
+	corona::SaveImage("../Photos/fading_image_front.jpg", corona::FileFormat::FF_PNG, fading_jpeg_front);
+
+	corona::Image* fading_jpeg_back = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	Pixels** fading_image_back = Fading_back(tabPixels, width, height, Mediane);
+	TabToPixels(fading_image_back, fading_jpeg_back);
+	corona::SaveImage("../Photos/fading_image_back.jpg", corona::FileFormat::FF_PNG, fading_jpeg_back);
 
 }

@@ -7,10 +7,9 @@ Pixels * *init(int largeur, int hauteur) {
 		tab[i] = &tab2[i * largeur];
 
 		for (int j = 0; j < largeur; j++) {
-			tab[i][j] = { 0,0,0,255 };
+			tab[i][j] = { 255,255,255,255 };
 		}
 	}
-
 	return tab;
 }
 
@@ -18,7 +17,7 @@ corona::Image** initImage(int n, char* arguments[]) {
 	corona::Image* img;
 	corona::Image** tabImage = new corona::Image * [n];
 	for (int i = 0; i < n; ++i) {
-		img = corona::OpenImage(arguments[i + 1], corona::PF_R8G8B8A8);
+		img = corona::OpenImage(arguments[i + 2], corona::PF_R8G8B8A8);
 		tabImage[i] = img;
 	}
 

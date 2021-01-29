@@ -30,10 +30,33 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Resultat final comportant le fond + les sujets</returns>
-Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, int width, int height);
+Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, Pixels** fond, int width, int height);
 
-Pixels** MaximumNimages(std::list<Pixels**> tabPixels, int width, int height);
 
-Pixels** Fading_front(std::list<Pixels**> tabPixels, int width, int height, Pixels** Mediane);
+/// <summary>
+/// La moyenne de n Image. Le sujet est transparent
+/// </summary>
+/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Tableau de pixels comportant les sujets transparent</returns>
+Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height);
+/// <summary>
+/// Le sujet deviens de plus en plus opaque
+/// </summary>
+/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Tableau de pixels comportant les sujets de plus en plus opaque</returns>
+Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);
 
-Pixels** Fading_back(std::list<Pixels**> tabPixels, int width, int height, Pixels** Mediane);
+/// <summary>
+/// Le sujet deviens de plus en plus transparent
+/// </summary>
+/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <returns>Tableau de pixels comportant les sujets de plus en plus transparent</returns>
+Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);

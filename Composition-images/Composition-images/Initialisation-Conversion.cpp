@@ -1,5 +1,12 @@
 #include "Initialisation-Conversion.hpp"
-
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <windows.h>
+#include <cstdlib>
+#include <ctime>
+#include <list>
 Pixels * *init(int largeur, int hauteur) {
 	Pixels** tab = new Pixels * [hauteur];
 	Pixels* tab2 = new Pixels[hauteur * largeur];
@@ -7,18 +14,19 @@ Pixels * *init(int largeur, int hauteur) {
 		tab[i] = &tab2[i * largeur];
 
 		for (int j = 0; j < largeur; j++) {
-			tab[i][j] = { 0,0,0,255 };
+			tab[i][j] = { 255,255,255,255 };
 		}
 	}
-
 	return tab;
 }
 
-corona::Image** initImage(int n, char* arguments[]) {
+corona::Image** initImage(std::list<std::string> arguments) {
 	corona::Image* img;
+	int n = arguments.size();
 	corona::Image** tabImage = new corona::Image * [n];
 	for (int i = 0; i < n; ++i) {
-		img = corona::OpenImage(arguments[i + 1], corona::PF_R8G8B8A8);
+		img = corona::OpenImage(arguments.front().c_str(), corona::PF_R8G8B8A8);
+		arguments.pop_front();
 		tabImage[i] = img;
 	}
 
@@ -80,4 +88,51 @@ void TabToPixels(Pixels** pix, corona::Image* img) {
 			*iter++;
 		}
 	}
+}
+
+
+
+bool validPATH(std::string PATH)               
+{
+	const char* st = PATH.c_str();
+	if (PATH.length() == 2)
+	{
+		if (st[1] == ':')
+			return true;
+	}
+	else
+	{
+		if (st[1] == ':' && st[2] == '\\' && st[PATH.length()] != '\\')// Le chemin doit commencer avec 1 lettre uniquement suivi de :\\ et la fin ne doit pas finir par '\\'
+			return true;
+		if (st[0] == '.' && st[2] == '\\' && st[PATH.length()] != '\\')
+			return true;
+		if (st[0] == '.' && st[1] == '.' && st[2] == '\\' && st[PATH.length()] != '\\')
+			return true;
+		return false;
+	}
+}
+
+std::list<std::string> FindFilesInDirectory(std::string dir) {
+	std::string sT,sP;
+	if (validPATH(dir))
+	{
+		sT = dir;
+		sT.append("\\");
+	}
+	else
+		std::cout << "INVALID PATH! ABORTING...", exit(EXIT_SUCCESS);
+	WIN32_FIND_DATAA FindFileData;
+	HANDLE hF;
+	sP = sT;
+	sP.append("\\");
+	sT.append("*");
+	std::list<std::string> lst;
+	hF = FindFirstFileA(sT.data(), &FindFileData);
+	do {
+		lst.push_back(sP + FindFileData.cFileName);
+	} while (FindNextFileA(hF, &FindFileData));
+	FindClose(hF);
+	lst.pop_front();
+	lst.pop_front();
+	return lst;
 }

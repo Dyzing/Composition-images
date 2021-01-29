@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>..\Photos\chrono2\chrono21.png ..\Photos\chrono2\chrono22.png ..\Photos\chrono2\chrono23.png ..\Photos\chrono2\chrono24.png ..\Photos\chrono2\chrono25.png ..\Photos\chrono2\chrono26.png ..\Photos\chrono2\chrono27.png</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-dir ..\\Photos\\chrono1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

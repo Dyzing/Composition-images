@@ -104,6 +104,10 @@ bool validPATH(std::string PATH)
 	{
 		if (st[1] == ':' && st[2] == '\\' && st[PATH.length()] != '\\')// Le chemin doit commencer avec 1 lettre uniquement suivi de :\\ et la fin ne doit pas finir par '\\'
 			return true;
+		if (st[0] == '.' && st[2] == '\\' && st[PATH.length()] != '\\')
+			return true;
+		if (st[0] == '.' && st[1] == '.' && st[2] == '\\' && st[PATH.length()] != '\\')
+			return true;
 		return false;
 	}
 }

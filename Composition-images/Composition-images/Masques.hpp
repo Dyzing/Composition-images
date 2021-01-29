@@ -4,6 +4,7 @@
 #include "Filtres.hpp"
 #include <algorithm>
 
+
 /// <summary>
 /// Creation du masque correspondant au sujet de l'image
 /// </summary>
@@ -60,3 +61,5 @@ Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane, int width
 /// <param name="height">Hauteur</param>
 /// <returns>Tableau de pixels comportant les sujets de plus en plus transparent</returns>
 Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);
+
+int cc_size(Pixels** im, int width, int height, int x, int y);

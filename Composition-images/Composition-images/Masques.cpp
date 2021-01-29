@@ -1,6 +1,8 @@
 #include "Masques.hpp"
 #include <vector>
 #include <numeric>
+#include <stack>
+#include <tuple>
 
 Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
 	Image = FlouGaussien(Image, width, height);
@@ -128,4 +130,48 @@ Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width,
 	res_moy = AppliquerMasque(res_moy, tabPixels.front(), masque, width, height);
 
 	return res_moy;
+}
+
+
+int cc_size(Pixels** im, int width, int height, int x, int y)
+{
+	std::tuple<int, int> start = { x, y };
+	std::stack< std::tuple<int, int> > deque;
+	int compteur = 0;
+
+	if (im[x][y].red <= 5 && im[x][y].green <= 5 && im[x][y].blue <= 5) //a changer si on veut faire en fontion de la tolérance
+	{
+		compteur = 1;
+		deque.push(start);
+		im[x][y] = {0, 0, 0, 255};
+		while (deque.size() > 0)
+		{
+			std::make_tuple(x, y) = deque.top();
+			deque.pop();
+
+			for (size_t i = x-1; i < x+2; i++)
+			{
+				if (i >= 0 && i < height) //a intervertir si jamais ça ne fonctionne pas
+				{
+					for (size_t j = y-1; j < y+2; j++)
+					{
+						if (j >= 0 && j < width)
+						{
+							if (i != x || j != y)
+							{
+								if (im[x][y].red <= 5 && im[x][y].green <= 5 && im[x][y].blue <= 5)
+								{
+									deque.push({ i, j });
+									im[x][y] = { 0, 0, 0, 255 };
+									++compteur;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return compteur;
 }

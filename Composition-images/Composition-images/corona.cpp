@@ -73,4 +73,8 @@ int main(int argc, char* argv[])
 	TabToPixels(fading_image_back, fading_jpeg_back);
 	corona::SaveImage("../Photos/fading_image_back.jpg", corona::FileFormat::FF_PNG, fading_jpeg_back);
 
+	corona::Image* connexe_jpeg = corona::OpenImage("../Photos/Masque2.jpg", corona::PF_R8G8B8A8); 
+	Pixels** tab_connexe_jpeg = ImageToPixels(connexe_jpeg);
+	int cc_size_number = cc_size(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 455, 348);
+
 }

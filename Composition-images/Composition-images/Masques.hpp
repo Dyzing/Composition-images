@@ -2,7 +2,7 @@
 
 #include "Initialisation-Conversion.hpp"
 #include "Filtres.hpp"
-
+#include <algorithm>
 
 /// <summary>
 /// Creation du masque correspondant au sujet de l'image
@@ -31,3 +31,9 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 /// <param name="height">Hauteur</param>
 /// <returns>Resultat final comportant le fond + les sujets</returns>
 Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, int width, int height);
+
+Pixels** MaximumNimages(std::list<Pixels**> tabPixels, int width, int height);
+
+Pixels** Fading_front(std::list<Pixels**> tabPixels, int width, int height, Pixels** Mediane);
+
+Pixels** Fading_back(std::list<Pixels**> tabPixels, int width, int height, Pixels** Mediane);

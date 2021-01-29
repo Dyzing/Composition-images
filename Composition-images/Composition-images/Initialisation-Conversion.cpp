@@ -136,3 +136,44 @@ std::list<std::string> FindFilesInDirectory(std::string dir) {
 	lst.pop_front();
 	return lst;
 }
+
+void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading) {
+
+	//Recuperation de fichiers à partir d'un dossier
+	if (cmdOptionExists(argv, argv + argc, "-dir"))
+	{
+		char* filename = getCmdOption(argv, argv + argc, "-dir");
+		files = FindFilesInDirectory(filename);
+
+	}
+
+	//Recuperation de la liste des fichiers 
+	else if (cmdOptionExists(argv, argv + argc, "-file")) {
+		char** end = argv + argc;
+		char** debut = argv;
+		const std::string option = "-file";
+		char** itr = std::find(debut, end, option);
+		if (itr != argv + argc && itr + 1 != argv + argc) {
+			++itr;
+			while (itr != argv + argc) {
+
+				files.push_back(*itr);
+				++itr;
+			}
+		}
+	}
+	//Recuperation de la video
+	if (cmdOptionExists(argv, argv + argc, "-video")) {
+		std::cout << "NOT IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+	}
+	//Recuperation de l'option fading
+	if (cmdOptionExists(argv, argv + argc, "-fading")) {
+		char* tmp = getCmdOption(argv, argv + argc, "-fading");
+		std::string fadingOpt = tmp;
+		if ((fadingOpt == "opaque") or (fadingOpt == "plus") or (fadingOpt == "moins")) {
+			fading = fadingOpt;
+		}
+	}
+
+	
+}

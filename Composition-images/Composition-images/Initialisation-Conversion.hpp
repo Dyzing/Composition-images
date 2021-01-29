@@ -52,3 +52,13 @@ bool validPATH(std::string PATH);
 /// <param name="dir">Chemin du repertoire</param>
 /// <returns>Liste des fichiers du repertoire</returns>
 std::list<std::string> FindFilesInDirectory(std::string dir);
+
+
+/// <summary>
+/// Recupère les paramètres de l'application
+/// </summary>
+/// <param name="argc">Nombre d'arguments</param>
+/// <param name="argv">Liste d'arguments</param>
+/// <param name="files">Liste des fichiers qui sera mis a jour</param>
+/// <param name="fading">Option fading</param>
+void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading);

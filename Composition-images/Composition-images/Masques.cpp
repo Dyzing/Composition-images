@@ -22,18 +22,12 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			if (Masque[i][j].red > 18)
-				tabFinal[i][j].red = ImgBase[i][j].red;
-			else
-				tabFinal[i][j].red = Fond[i][j].red;
-			if (Masque[i][j].green > 18)
-				tabFinal[i][j].green = ImgBase[i][j].green;
-			else
-				tabFinal[i][j].green = Fond[i][j].green;
-			if (Masque[i][j].blue > 18)
-				tabFinal[i][j].blue = ImgBase[i][j].blue;
-			else
-				tabFinal[i][j].blue = Fond[i][j].blue;
+			if (!(Masque[i][j] <= 12 )) {
+				tabFinal[i][j] = ImgBase[i][j];
+			}
+			else {
+				tabFinal[i][j] = Fond[i][j];
+			}
 			
 		}
 	}

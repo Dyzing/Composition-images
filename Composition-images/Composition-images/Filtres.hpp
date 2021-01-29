@@ -11,6 +11,16 @@
 Pixels * *FlouGaussien(Pixels * *img, int width, int height);
 
 /// <summary>
+/// Application du Filtre Median
+/// </summary>
+/// <param name="img">Image sur laquelle on souhaite utiliser le flou</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <param name="radius">Radius</param>
+/// <returns>Image debruite avec le filtre </returns>
+Pixels** filtre_median(Pixels** image, int width, int height, int radius);
+
+/// <summary>
 /// Creation de la mediane / extraction du sujet des images
 /// </summary>
 /// <param name="images">Liste d'image</param>

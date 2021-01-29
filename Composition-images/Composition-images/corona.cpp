@@ -11,12 +11,14 @@ int main(int argc, char* argv[])
 	int width = tabImage[0]->getWidth(); //Largeur
 	int height = tabImage[0]->getHeight(); //Hauteur
 
-	Pixels** firstTab = tabPixels.front();
+	//Pixels** firstTab = tabPixels.front();
 	//Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight()); //Application de la mediane
 	//Mediane = FlouGaussien(Mediane, width, height);
+	
 	//corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 	//TabToPixels(Mediane, MedianeImg);
 	//corona::SaveImage("../Photos/MedianeWithBlur.jpg", corona::FileFormat::FF_PNG, MedianeImg);
+
 	//Mediane = FlouGaussien(Mediane, width, height);
 	//corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 	//TabToPixels(Mediane, MedianeImg);

@@ -15,7 +15,7 @@ Pixels * *init(int largeur, int hauteur);
 /// <param name="n">Nombre d'image</param>
 /// <param name="arguments">chemin des images</param>
 /// <returns>Tableau comportant toutes les images</returns>
-corona::Image** initImage(int n, char* arguments[]);
+corona::Image** initImage(std::list<std::string> arguments);
 
 /// <summary>
 /// Initialisation des tableaux correspondant a la liste d'images
@@ -38,3 +38,17 @@ Pixels** ImageToPixels(corona::Image* img);
 /// <param name="pix">Tableau de pixels</param>
 /// <param name="img">Image qui recevra le tableau de pixels</param>
 void TabToPixels(Pixels** pix, corona::Image* img);
+
+
+/// <summary>
+/// Valide ou non le chemin passé en parametre
+/// </summary>
+/// <param name="PATH"></param>
+/// <returns>True : valide / false : non valide</returns>
+bool validPATH(std::string PATH);
+/// <summary>
+/// Trouve tout les fichiers correspondant au repertoire
+/// </summary>
+/// <param name="dir">Chemin du repertoire</param>
+/// <returns>Liste des fichiers du repertoire</returns>
+std::list<std::string> FindFilesInDirectory(std::string dir);

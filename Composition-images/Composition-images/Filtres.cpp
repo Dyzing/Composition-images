@@ -42,9 +42,9 @@ Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			n = 0;
-			valR = {};
-			valG = {};
-			valB = {};
+			valR.clear();
+			valG.clear();
+			valB.clear();
 			std::list<int>::iterator it;
 			for (Pixels** pixels : images) {
 				n += 1;

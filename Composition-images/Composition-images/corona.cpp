@@ -77,11 +77,22 @@ int main(int argc, char* argv[])
 
 	//connexe a effacer
 	corona::Image* connexe_jpeg = corona::OpenImage("../Photos/test.jpg", corona::PF_R8G8B8A8);
-	Pixels** tab_connexe_jpeg = ImageToPixels(connexe_jpeg);
-	//int cc_size_number = cc_size(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 388, 344);
-	Pixels** cc_size_number = cc_size_tab(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 400, 100);
+	corona::Image* connexe_jpeg_clone = corona::CloneImage(connexe_jpeg, corona::PF_R8G8B8A8);
+	Pixels** tab_connexe_jpeg = ImageToPixels(connexe_jpeg); //pour le cc_size_tab
+	Pixels** tab_connexe_jpeg_clone = ImageToPixels(connexe_jpeg_clone); //pour le cc_size
 
+
+	int cc_size_number = cc_size(tab_connexe_jpeg_clone, connexe_jpeg_clone->getWidth(), connexe_jpeg_clone->getHeight(), 400, 100);
+	std::cout << "---------------------" << std::endl << "nb connexe : " << cc_size_number << std::endl << "---------------------" << std::endl;
+
+	Pixels** cc_size_tab_image = cc_size_tab(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 400, 100);
 	corona::Image* connexe_jpg_new = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
-	TabToPixels(cc_size_number, connexe_jpg_new);
+	TabToPixels(cc_size_tab_image, connexe_jpg_new);
 	corona::SaveImage("../Photos/test_connexe.jpg", corona::FileFormat::FF_PNG, connexe_jpg_new);
+
+	Pixels** cc_remove_image = remove_cc(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 400, 100);
+	corona::Image* cc_remove_jpg = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
+	TabToPixels(cc_remove_image, cc_remove_jpg);
+	corona::SaveImage("../Photos/test_remove.jpg", corona::FileFormat::FF_PNG, cc_remove_jpg);
+	
 }

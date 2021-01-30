@@ -255,3 +255,78 @@ Pixels** remove_cc(Pixels** im, int width, int height, int x, int y)
 	}
 	return im;
 }
+
+Pixels** filter_cc(Pixels** im, int width, int height, int minSize)
+{
+	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(im, cop);
+	Pixels** pix2 = ImageToPixels(cop);
+	int nb_cc_size;
+
+	for (int x = 0; x < height; x++)
+	{
+		for (int y = 0; y < width; y++)
+		{
+			nb_cc_size = cc_size(pix2, width, height, x, y);
+			if (0 < nb_cc_size && nb_cc_size <= minSize)
+			{
+				remove_cc(im, width, height, x, y);
+			}
+		}
+	}
+	return im;
+}
+
+Pixels** biggest_cc(Pixels** im, int width, int height)
+{
+	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+	TabToPixels(im, cop);
+	Pixels** pix2 = ImageToPixels(cop);
+	int biggersize = 0;
+	int currentsize;
+	for (int x = 0; x < height; x++)
+	{
+		for (int y = 0; y <  width; y++)
+		{
+			currentsize = cc_size(pix2, width, height, x, y);
+			if (currentsize > biggersize)
+			{
+				biggersize = currentsize;
+			}
+		}
+	}
+	return filter_cc(im, width, height, biggersize);
+}
+
+
+//connexe a effacer
+//corona::Image* connexe_jpeg = corona::OpenImage("../Photos/test.jpg", corona::PF_R8G8B8A8);
+//corona::Image* connexe_jpeg_clone = corona::CloneImage(connexe_jpeg, corona::PF_R8G8B8A8);
+//Pixels** tab_connexe_jpeg = ImageToPixels(connexe_jpeg); //pour le cc_size_tab
+//Pixels** tab_connexe_jpeg_clone = ImageToPixels(connexe_jpeg_clone); //pour le cc_size
+
+
+//int cc_size_number = cc_size(tab_connexe_jpeg_clone, connexe_jpeg_clone->getWidth(), connexe_jpeg_clone->getHeight(), 400, 100);
+//std::cout << "---------------------" << std::endl << "nb connexe : " << cc_size_number << std::endl << "---------------------" << std::endl;
+
+/*Pixels** cc_size_tab_image = cc_size_tab(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 400, 100);
+corona::Image* connexe_jpg_new = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
+TabToPixels(cc_size_tab_image, connexe_jpg_new);
+corona::SaveImage("../Photos/test_connexe.jpg", corona::FileFormat::FF_PNG, connexe_jpg_new);
+
+std::cout << "---------------------" << std::endl << "test_connexe termine" << std::endl << "---------------------" << std::endl;*/
+
+//Pixels** cc_filter_image = filter_cc(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 20000);
+//corona::Image* cc_filter_jpg = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
+//TabToPixels(cc_filter_image, cc_filter_jpg);
+//corona::SaveImage("../Photos/test_filter.jpg", corona::FileFormat::FF_PNG, cc_filter_jpg);
+
+//std::cout << "---------------------" << std::endl << "test_filter termine" << std::endl << "---------------------" << std::endl;
+
+//Pixels** cc_biggest_image = biggest_cc(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight());
+//corona::Image* cc_biggest_jpg = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
+//TabToPixels(cc_biggest_image, cc_biggest_jpg);
+//corona::SaveImage("../Photos/test_biggest.jpg", corona::FileFormat::FF_PNG, cc_biggest_jpg);
+
+//std::cout << "---------------------" << std::endl << "test_biggest termine" << std::endl << "---------------------" << std::endl;
+

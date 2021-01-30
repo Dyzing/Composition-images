@@ -67,3 +67,7 @@ int cc_size(Pixels** im, int width, int height, int x, int y);
 Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y);
 
 Pixels** remove_cc(Pixels** im, int width, int height, int x, int y);
+
+Pixels** filter_cc(Pixels** im, int width, int height, int minSize);
+
+Pixels** biggest_cc(Pixels** im, int width, int height);

@@ -62,4 +62,4 @@ Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane, int width
 /// <returns>Tableau de pixels comportant les sujets de plus en plus transparent</returns>
 Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);
 
-int cc_size(Pixels** im, int width, int height, int x, int y);
+Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y);

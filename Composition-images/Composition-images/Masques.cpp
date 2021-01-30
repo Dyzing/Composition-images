@@ -127,20 +127,22 @@ Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width,
 }
 
 
-int cc_size(Pixels** im, int width, int height, int x, int y)
+Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y)
 {
 	std::tuple<int, int> start = { x, y };
 	std::stack< std::tuple<int, int> > deque;
+	Pixels** tab = init(width, height);
 	int compteur = 0;
 
-	if (im[x][y].red <= 5 && im[x][y].green <= 5 && im[x][y].blue <= 5) //a changer si on veut faire en fontion de la tolérance
+	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolérance
 	{
 		compteur = 1;
 		deque.push(start);
 		im[x][y] = {0, 0, 0, 255};
 		while (deque.size() > 0)
 		{
-			std::make_tuple(x, y) = deque.top();
+			x = std::get<0>(deque.top());
+			y = std::get<1>(deque.top());
 			deque.pop();
 
 			for (size_t i = x-1; i < x+2; i++)
@@ -153,10 +155,11 @@ int cc_size(Pixels** im, int width, int height, int x, int y)
 						{
 							if (i != x || j != y)
 							{
-								if (im[x][y].red <= 5 && im[x][y].green <= 5 && im[x][y].blue <= 5)
+								if (!(im[i][j].red <= 25 && im[i][j].green <= 25 && im[i][j].blue <= 25))
 								{
 									deque.push({ i, j });
-									im[x][y] = { 0, 0, 0, 255 };
+									tab[i][j] = im[i][j];
+									im[i][j] = { 0, 0, 0, 255 };
 									++compteur;
 								}
 							}
@@ -166,6 +169,6 @@ int cc_size(Pixels** im, int width, int height, int x, int y)
 			}
 		}
 	}
-
-	return compteur;
+	return tab;
+	//return compteur;
 }

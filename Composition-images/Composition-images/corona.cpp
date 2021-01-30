@@ -52,7 +52,8 @@ int main(int argc, char* argv[])
 	Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur,tabPixels, Mediane, width, height);
 
 	std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
-	//a effacer
+
+	//fading
 	if (fading == "opaque") {
 		corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
 		TabToPixels(MedianeAndMasque, MasqueAppliquer);
@@ -74,8 +75,13 @@ int main(int argc, char* argv[])
 	std::cout << "---------------------" << std::endl << "Programme terminer" << std::endl << "---------------------" << std::endl;
 
 
-	corona::Image* connexe_jpeg = corona::OpenImage("../Photos/Masque2.jpg", corona::PF_R8G8B8A8);
+	//connexe a effacer
+	corona::Image* connexe_jpeg = corona::OpenImage("../Photos/test.jpg", corona::PF_R8G8B8A8);
 	Pixels** tab_connexe_jpeg = ImageToPixels(connexe_jpeg);
-	int cc_size_number = cc_size(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 455, 348);
+	//int cc_size_number = cc_size(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 388, 344);
+	Pixels** cc_size_number = cc_size_tab(tab_connexe_jpeg, connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), 400, 100);
 
+	corona::Image* connexe_jpg_new = corona::CreateImage(connexe_jpeg->getWidth(), connexe_jpeg->getHeight(), corona::PF_R8G8B8A8);
+	TabToPixels(cc_size_number, connexe_jpg_new);
+	corona::SaveImage("../Photos/test_connexe.jpg", corona::FileFormat::FF_PNG, connexe_jpg_new);
 }

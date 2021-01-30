@@ -1,33 +1,15 @@
+#pragma once
 #include <corona.h>
 #include <iostream>
 #include <stdio.h>
 #include <list>
 #include <cmath>
 #include <algorithm>
-#pragma once
+#include "Image.hpp"
 
-/// <summary>
-/// Structure d'un pixel en RGBA
-/// </summary>
-struct Pixels {
 
-	int red;
-	int green;
-	int blue;
-	int alpha;
 
-};
-/// <summary>
-/// Structure d'un pixel en RGBA avec des valeurs float
-/// </summary>
-struct PixelsFloat {
 
-	float red;
-	float green;
-	float blue;
-	float alpha;
-};
-typedef unsigned char byte;
 inline bool operator==(Pixels p, Pixels p2){
 	return p.red == p2.red && p.green == p2.green && p.blue == p2.blue && p.alpha == p2.alpha;
 }

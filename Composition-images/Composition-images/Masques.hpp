@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Initialisation-Conversion.hpp"
 #include "Filtres.hpp"
 #include <algorithm>
@@ -31,7 +30,7 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Resultat final comportant le fond + les sujets</returns>
-Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, Pixels** fond, int width, int height);
+Pixels** MultiMasque(Pixels** Mediane, Image* Images, int nb, Pixels** fond, int width, int height);
 
 
 /// <summary>
@@ -50,7 +49,7 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height);
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Tableau de pixels comportant les sujets de plus en plus opaque</returns>
-Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);
+Pixels** Fading_front(Image* Images, Pixels** Mediane,int nb ,int width, int height);
 
 /// <summary>
 /// Le sujet deviens de plus en plus transparent
@@ -60,7 +59,7 @@ Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane, int width
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Tableau de pixels comportant les sujets de plus en plus transparent</returns>
-Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height);
+Pixels** Fading_back(Image* Images, Pixels** Mediane,int nb ,int width, int height);
 
 int cc_size(Pixels** im, int width, int height, int x, int y);
 

@@ -1,17 +1,18 @@
-#include "Masques.hpp"
+ï»¿#include "Masques.hpp"
 #include <vector>
 #include <numeric>
 #include <stack>
 #include <tuple>
 
-Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
-	Image = FlouGaussien(Image, width, height);
-	Pixels** tabFinal = init(width, height);
+Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height) {
+	Img = FlouGaussien(Img, width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** tabFinal = tmp->getTabPixels();
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			tabFinal[i][j].red = std::abs(Fond[i][j].red - Image[i][j].red);
-			tabFinal[i][j].green = std::abs(Fond[i][j].green - Image[i][j].green);
-			tabFinal[i][j].blue = std::abs(Fond[i][j].blue - Image[i][j].blue);
+			tabFinal[i][j].red = std::abs(Fond[i][j].red - Img[i][j].red);
+			tabFinal[i][j].green = std::abs(Fond[i][j].green - Img[i][j].green);
+			tabFinal[i][j].blue = std::abs(Fond[i][j].blue - Img[i][j].blue);
 		}
 	}
 	return tabFinal;
@@ -19,7 +20,8 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Image, int width, int height) {
 
 Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height) {
 
-	Pixels** tabFinal = init(width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** tabFinal = tmp->getTabPixels();
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			if (!(Masque[i][j] <= 12 )) {
@@ -35,13 +37,14 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 }
 
 
-Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, Pixels** fond, int width, int height) {
+Pixels** MultiMasque(Pixels** Mediane, Image* tabImage,int nb, Pixels** fond, int width, int height) {
 	Pixels** masque;
 	Pixels** resFinal = fond;
-	corona::Image* img = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	for (Pixels** tab : tabPixels) {
-		masque = CreationMasque(Mediane, tab, width, height);
-		resFinal = AppliquerMasque(resFinal, tab, masque, width, height);
+	Pixels** pixels;
+	for (int x = 0; x < nb; ++x) {
+		pixels = tabImage[x].getTabPixels();
+		masque = CreationMasque(Mediane, pixels, width, height);
+		resFinal = AppliquerMasque(resFinal, pixels, masque, width, height);
 	}
 
 	return resFinal;
@@ -50,19 +53,20 @@ Pixels** MultiMasque(Pixels** Mediane, std::list<Pixels**> tabPixels, Pixels** f
 
 Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 {
-	Pixels** image_res = init(width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** image_res = tmp->getTabPixels();
 	int max_r, max_g, max_b, sum_r, sum_g, sum_b;
 	Pixels p;
 	int N = tabPixels.size();
-	for (size_t x = 0; x < height; x++)
+	for (int x = 0; x < height; x++)
 	{
-		for (size_t y = 0; y < width; y++)
+		for (int y = 0; y < width; y++)
 		{
 			sum_r = 0;
 			sum_g = 0;
 			sum_b = 0;
 
-			for (Pixels** pixels : tabPixels) 
+			for (Pixels** pixels : tabPixels)
 			{
 				p = pixels[x][y];
 
@@ -82,14 +86,19 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 	return image_res;
 }
 
-Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane,int width, int height)
+Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int height)
 {
-	Pixels** res_moy = init(width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** res_moy = tmp->getTabPixels();
+	std::list<Pixels**> tabPixels;
 	std::list<Pixels**> tempPix;
+	for (int x = 0; x < nb; ++x) {
+		tabPixels.push_back(tabImage[x].getTabPixels());
+	}
 	tempPix.push_back(tabPixels.front());
 	tabPixels.pop_front();
 	int nbtabPixels = tabPixels.size();
-	for (size_t i = 0; i < nbtabPixels - 1; i++)
+	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
 		tempPix.push_back(tabPixels.front());
 		tabPixels.pop_front();
@@ -104,18 +113,23 @@ Pixels** Fading_front(std::list<Pixels**> tabPixels, Pixels** Mediane,int width,
 	return res_moy;
 }
 
-Pixels** Fading_back(std::list<Pixels**> tabPixels, Pixels** Mediane, int width, int height)
+Pixels** Fading_back(Image* tabImage, Pixels** Mediane,int nb ,int width, int height)
 {
-	Pixels** res_moy = init(width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** res_moy = tmp->getTabPixels();
+	std::list<Pixels**> tabPixels;
 	std::list<Pixels**> tempPix;
+	for (int x = 0; x < nb; ++x) {
+		tabPixels.push_back(tabImage[x].getTabPixels());
+	}
 	tempPix.push_back(tabPixels.back());
 	tabPixels.pop_back();
 	int nbtabPixels = tabPixels.size();
-	for (size_t i = 0; i < nbtabPixels - 1; i++)
+	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
 		tempPix.push_back(tabPixels.back());
 		tabPixels.pop_back();
-		res_moy = MoyenneNimages(tempPix, width, height);
+		res_moy = MoyenneNimages(tempPix,width, height);
 		tempPix.clear();
 		tempPix.push_back(res_moy);
 	}
@@ -132,7 +146,7 @@ int cc_size(Pixels** im, int width, int height, int x, int y)
 	std::stack< std::tuple<int, int> > deque;
 	int compteur = 0;
 
-	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolérance
+	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolÃ©rance
 	{
 		compteur = 1;
 		deque.push(start);
@@ -143,11 +157,11 @@ int cc_size(Pixels** im, int width, int height, int x, int y)
 			y = std::get<1>(deque.top());
 			deque.pop();
 
-			for (size_t i = x - 1; i < x + 2; i++)
+			for (int i = x - 1; i < x + 2; i++)
 			{
 				if (i >= 0 && i < height)
 				{
-					for (size_t j = y - 1; j < y + 2; j++)
+					for (int j = y - 1; j < y + 2; j++)
 					{
 						if (j >= 0 && j < width)
 						{
@@ -174,10 +188,11 @@ Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y)
 {
 	std::tuple<int, int> start = { x, y };
 	std::stack< std::tuple<int, int> > deque;
-	Pixels** tab = init(width, height);
+	Image* tmp = new Image(width, height);
+	Pixels** tab = tmp->getTabPixels();
 	int compteur = 0;
 
-	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolérance
+	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolï¿½rance
 	{
 		compteur = 1;
 		deque.push(start);
@@ -188,11 +203,11 @@ Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y)
 			y = std::get<1>(deque.top());
 			deque.pop();
 
-			for (size_t i = x-1; i < x+2; i++)
+			for (int i = x-1; i < x+2; i++)
 			{
 				if (i >= 0 && i < height)
 				{
-					for (size_t j = y-1; j < y+2; j++)
+					for (int j = y-1; j < y+2; j++)
 					{
 						if (j >= 0 && j < width)
 						{
@@ -221,7 +236,7 @@ Pixels** remove_cc(Pixels** im, int width, int height, int x, int y)
 	std::tuple<int, int> start = { x, y };
 	std::stack< std::tuple<int, int> > deque;
 
-	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolérance
+	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolï¿½rance
 	{
 		deque.push(start);
 		im[x][y] = { 0, 0, 0, 255 };
@@ -231,11 +246,11 @@ Pixels** remove_cc(Pixels** im, int width, int height, int x, int y)
 			y = std::get<1>(deque.top());
 			deque.pop();
 
-			for (size_t i = x - 1; i < x + 2; i++)
+			for (int i = x - 1; i < x + 2; i++)
 			{
 				if (i >= 0 && i < height)
 				{
-					for (size_t j = y - 1; j < y + 2; j++)
+					for (int j = y - 1; j < y + 2; j++)
 					{
 						if (j >= 0 && j < width)
 						{

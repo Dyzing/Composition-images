@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClCompile Include="corona.cpp" />
     <ClCompile Include="Filtres.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="Initialisation-Conversion.cpp" />
     <ClCompile Include="Masques.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="corona.hpp" />
     <ClInclude Include="Filtres.hpp" />
+    <ClInclude Include="Image.hpp" />
     <ClInclude Include="Initialisation-Conversion.hpp" />
     <ClInclude Include="Masques.hpp" />
   </ItemGroup>

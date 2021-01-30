@@ -17,4 +17,4 @@ Pixels * *FlouGaussien(Pixels * *img, int width, int height);
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns></returns>
-Pixels** median_images(std::list<Pixels**> images, int width, int height);
+Pixels** median_images(Image* images,int nb, int width, int height);

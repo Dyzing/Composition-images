@@ -14,7 +14,7 @@ Pixels * *init(int largeur, int hauteur) {
 		tab[i] = &tab2[i * largeur];
 
 		for (int j = 0; j < largeur; j++) {
-			tab[i][j] = { 255,255,255,255 };
+			tab[i][j] = { 0,0,0,255 };
 		}
 	}
 	return tab;

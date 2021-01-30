@@ -40,3 +40,5 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option);
 /// <param name="option">Option a chercher</param>
 /// <returns>Valeur de l'option</returns>
 char* getCmdOption(char** begin, char** end, const std::string& option);
+
+void CreateMedianes(std::list<Pixels**> tabPixels, corona::Image** tabImage);

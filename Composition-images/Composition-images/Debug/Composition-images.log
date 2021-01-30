@@ -1,2 +1,6 @@
 ﻿  Masques.cpp
+C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\Masques.cpp(159,23): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\Masques.cpp(161,24): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\Masques.cpp(194,23): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Composition-images\Masques.cpp(216,23): warning C4018: '<' : incompatibilité signed/unsigned
   Composition-images.vcxproj -> C:\Users\tasha\Desktop\cour\c++\Composition-images\Composition-images\Debug\Composition-images.exe

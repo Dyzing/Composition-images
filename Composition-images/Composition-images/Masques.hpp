@@ -12,7 +12,7 @@
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Retourne le masque</returns>
-Pixels** CreationMasque(Pixels * *Fond, Pixels * *Image, int width, int height);
+Pixels** CreationMasque(Pixels * *Fond, Pixels * *Image, int width, int height, int n);
 /// <summary>
 /// Permet l'application du masque a partir de l'image de base sur le Fond
 /// </summary>
@@ -22,6 +22,8 @@ Pixels** CreationMasque(Pixels * *Fond, Pixels * *Image, int width, int height);
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height);
+int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, int y);
+Pixels** plusGrandConnexe(Pixels** tab, int height, int width);
 /// <summary>
 /// Fonction appliquant tout les masques correspondant aux images passes en parametre
 /// </summary>

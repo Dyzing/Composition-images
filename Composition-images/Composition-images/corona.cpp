@@ -23,27 +23,6 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
 	return test != end;
 }
 
-void CreateMedianes(std::list<Pixels**> tabPixels, corona::Image** tabImage) {
-
-	int width = tabImage[0]->getWidth(); 
-	int height = tabImage[0]->getHeight();
-
-	Pixels** Mediane = median_images(tabPixels, tabImage[0]->getWidth(), tabImage[0]->getHeight());
-
-	corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(Mediane, MedianeImg);
-	corona::SaveImage("../Photos/Mediane.jpg", corona::FileFormat::FF_PNG, MedianeImg);
-
-	Pixels** MedianewithBlur = FlouGaussien(Mediane, width, height);
-	
-	TabToPixels(MedianewithBlur, MedianeImg);
-	corona::SaveImage("../Photos/MedianeWithBlur.jpg", corona::FileFormat::FF_PNG, MedianeImg);
-
-	delete Mediane;
-	delete MedianeImg;
-	delete MedianewithBlur;
-}
-
 
 
 //void Connexe() {
@@ -73,34 +52,40 @@ int main(int argc, char* argv[])
 	std::string fading = "opaque";
 	getParams(argc,argv,files,fading);
 	int nbFichiers = files.size();
+
+
+
 	std::cout << "Parametres recuperes, Nombre de fichiers a traiter : " << nbFichiers << std::endl << "Option Fading : "<< fading <<std::endl;
 	tabImage = initImage(files); // Tableau comportant la liste d'images passe en parametres
 	int width = tabImage[0].getWidth(); //Largeur
 	int height = tabImage[0].getHeight(); //Hauteur
+
+
+
 	std::cout << "---------------------" << std::endl << "Creation de l'image de fond sans les sujets en cours" << std::endl << "---------------------" << std::endl;
 	Pixels** Mediane = median_images(tabImage, nbFichiers,width,height); //Application de la mediane
 	Pixels** MedianewithBlur = FlouGaussien(Mediane, width, height);
+
+
+
 	std::cout << "---------------------" << std::endl << "Creation de l'image de fond sans les sujets Termine" << std::endl << "---------------------" << std::endl;
 	Image* MedianeImg = new Image(width, height);
 	MedianeImg->setTabPixels(MedianewithBlur);
-	MedianeImg->setName("../Photos/MedianeWithBlur.jpg");
+	MedianeImg->setName("../Photos/Mediane.jpg");
 	MedianeImg->saveImg();
-	//Mediane = FlouGaussien(Mediane, width, height);
-	//corona::Image* MedianeImg = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	//TabToPixels(Mediane, MedianeImg);
-	
+	Image* MedianeWithBlurImg = new Image(width, height);
+	MedianeWithBlurImg->setTabPixels(MedianewithBlur);
+	MedianeWithBlurImg->setName("../Photos/MedianeWithBlur.jpg");
+	MedianeWithBlurImg->saveImg();
 
-	corona::Image* MedianewithBlurImg = corona::OpenImage("../Photos/MedianeWithBlur.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image mediane est deja creee, gain de temps
-	Pixels** MedianewithBlur = ImageToPixels(MedianewithBlurImg);
-	corona::Image* MedianeImg = corona::OpenImage("../Photos/Mediane.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image mediane est deja creee, gain de temps
-	Pixels** Mediane = ImageToPixels(MedianeImg);
-	//Pixels** masque = CreationMasque(MedianewithBlur, tabPixels.front(), width, height);
+
 
 	std::cout << "---------------------" << std::endl << "Extraction des sujets et integration sur l'image de fond" << std::endl << "---------------------" << std::endl;
 	Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height);
 
-	std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
 
+
+	std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
 	//fading
 	if (fading == "opaque") {
 		Image* MasqueAppliquer = new Image(width,height, "../Photos/MasqueAppliquer.jpg");

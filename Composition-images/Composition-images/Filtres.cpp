@@ -34,7 +34,8 @@ Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
 
 Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 
-	Pixels** tab = init(width, height);
+	Image* img = new Image(width, height);
+	Pixels** tab = img->getTabPixels();
 	std::list<int> valR;
 	std::list<int> valG;
 	std::list<int> valB;
@@ -91,9 +92,9 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 }
 
 
-Pixels** median_images(std::list<Pixels**> images, int width, int height) {
+Pixels** median_images(Image* images, int nb, int width, int height) {
 
-	Image* tmp = new Image();
+	Image* tmp = new Image(width, height);
 	Pixels** tab = tmp->getTabPixels();
 	std::list<int> valR;
 	std::list<int> valG;

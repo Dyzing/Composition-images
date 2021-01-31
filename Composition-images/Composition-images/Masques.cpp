@@ -18,15 +18,15 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int 
 		}
 	}
 	tabFinal = plusGrandConnexe(tabFinal, height, width);
-	corona::Image* MasqueAppliquer = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(tabFinal, MasqueAppliquer);
-	std::string test = std::to_string(n);
-	std::string test2 = "../Photos/Masque";
-	test2 += test + ".jpg";
-	char* cstr;
-	cstr = &test2[0];
+	Image* MasqueAppliquer = new Image(width, height, "../Photos/Masque" + std::to_string(n) + ".jpg");
+	MasqueAppliquer->setTabPixels(tabFinal);
+	MasqueAppliquer->saveImg();
+	//std::string test = std::to_string(n);
+	//std::string test2 = "../Photos/Masque";
+	//test2 += test + ".jpg";
+	//char* cstr;
+	//cstr = &test2[0];
 
-	corona::SaveImage(cstr, corona::FileFormat::FF_PNG, MasqueAppliquer);
 
 
 	return tabFinal;
@@ -77,8 +77,10 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width) {
 	Pixels p;
 	int taille;
 	int max = 0;
-	Pixels** connex = init(width, height);
-	Pixels** connexMax = init(width, height);
+	Image* img = new Image(width, height);
+	Image* img2 = new Image(width, height);
+	Pixels** connex = img->getTabPixels();
+	Pixels** connexMax = img2->getTabPixels();
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -372,47 +374,47 @@ Pixels** remove_cc(Pixels** im, int width, int height, int x, int y)
 	return im;
 }
 
-Pixels** filter_cc(Pixels** im, int width, int height, int minSize)
-{
-	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(im, cop);
-	Pixels** pix2 = ImageToPixels(cop);
-	int nb_cc_size;
+//Pixels** filter_cc(Pixels** im, int width, int height, int minSize)
+//{
+//	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+//	TabToPixels(im, cop);
+//	Pixels** pix2 = ImageToPixels(cop);
+//	int nb_cc_size;
+//
+//	for (int x = 0; x < height; x++)
+//	{
+//		for (int y = 0; y < width; y++)
+//		{
+//			nb_cc_size = cc_size(pix2, width, height, x, y);
+//			if (0 < nb_cc_size && nb_cc_size <= minSize)
+//			{
+//				remove_cc(im, width, height, x, y);
+//			}
+//		}
+//	}
+//	return im;
+//}
 
-	for (int x = 0; x < height; x++)
-	{
-		for (int y = 0; y < width; y++)
-		{
-			nb_cc_size = cc_size(pix2, width, height, x, y);
-			if (0 < nb_cc_size && nb_cc_size <= minSize)
-			{
-				remove_cc(im, width, height, x, y);
-			}
-		}
-	}
-	return im;
-}
-
-Pixels** biggest_cc(Pixels** im, int width, int height)
-{
-	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(im, cop);
-	Pixels** pix2 = ImageToPixels(cop);
-	int biggersize = 0;
-	int currentsize;
-	for (int x = 0; x < height; x++)
-	{
-		for (int y = 0; y <  width; y++)
-		{
-			currentsize = cc_size(pix2, width, height, x, y);
-			if (currentsize > biggersize)
-			{
-				biggersize = currentsize;
-			}
-		}
-	}
-	return filter_cc(im, width, height, biggersize);
-}
+//Pixels** biggest_cc(Pixels** im, int width, int height)
+//{
+//	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
+//	TabToPixels(im, cop);
+//	Pixels** pix2 = ImageToPixels(cop);
+//	int biggersize = 0;
+//	int currentsize;
+//	for (int x = 0; x < height; x++)
+//	{
+//		for (int y = 0; y <  width; y++)
+//		{
+//			currentsize = cc_size(pix2, width, height, x, y);
+//			if (currentsize > biggersize)
+//			{
+//				biggersize = currentsize;
+//			}
+//		}
+//	}
+//	return filter_cc(im, width, height, biggersize);
+//}
 
 
 //connexe a effacer

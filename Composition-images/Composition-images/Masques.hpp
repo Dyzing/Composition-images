@@ -22,7 +22,24 @@ Pixels** CreationMasque(Pixels * *Fond, Pixels * *Image, int width, int height, 
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height);
+/// <summary>
+/// Renvoie la taille de la composante connexe
+/// </summary>
+/// <param name="tab">Tableau</param>
+/// <param name="copyTab">Copie du tableau</param>
+/// <param name="height">Hauteur</param>
+/// <param name="width">Largeur</param>
+/// <param name="x">x(Start)</param>
+/// <param name="y">y(Start)</param>
+/// <returns>Taille de la CC</returns>
 int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, int y);
+/// <summary>
+/// Renvoie la plus grande composante connexe
+/// </summary>
+/// <param name="tab">Tableau de pixels</param>
+/// <param name="height">Hauteur</param>
+/// <param name="width">Largeur</param>
+/// <returns>Plus grande CC</returns>
 Pixels** plusGrandConnexe(Pixels** tab, int height, int width);
 /// <summary>
 /// Fonction appliquant tout les masques correspondant aux images passes en parametre

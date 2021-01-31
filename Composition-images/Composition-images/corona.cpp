@@ -7,21 +7,7 @@
 #include <numeric>
 #include "corona.hpp"
 
-char* getCmdOption(char** begin, char** end, const std::string& option)
-{
-	char** itr = std::find(begin, end, option);
-	if (itr != end && ++itr != end)
-	{
-		return *itr;
-	}
-	return 0;
-}
 
-bool cmdOptionExists(char** begin, char** end, const std::string& option)
-{
-	char** test = std::find(begin, end, option);
-	return test != end;
-}
 
 
 
@@ -47,7 +33,6 @@ int main(int argc, char* argv[])
 {
 	std::cout << std::endl << "---------------------" << std::endl << "Initialisation du Programme" << std::endl << "---------------------" << std::endl;
 	Image* tabImage;
-	std::list<Pixels**> tabPixels;
 	std::list<std::string> files;
 	std::string fading = "opaque";
 	getParams(argc,argv,files,fading);
@@ -69,14 +54,14 @@ int main(int argc, char* argv[])
 
 
 	std::cout << "---------------------" << std::endl << "Creation de l'image de fond sans les sujets Termine" << std::endl << "---------------------" << std::endl;
-	Image* MedianeImg = new Image(width, height);
-	MedianeImg->setTabPixels(MedianewithBlur);
-	MedianeImg->setName("../Photos/Mediane.jpg");
-	MedianeImg->saveImg();
-	Image* MedianeWithBlurImg = new Image(width, height);
-	MedianeWithBlurImg->setTabPixels(MedianewithBlur);
-	MedianeWithBlurImg->setName("../Photos/MedianeWithBlur.jpg");
-	MedianeWithBlurImg->saveImg();
+	Image MedianeImg(width, height);
+	MedianeImg.setTabPixels(MedianewithBlur);
+	MedianeImg.setName("../Photos/Mediane.jpg");
+	MedianeImg.saveImg();
+	Image MedianeWithBlurImg(width, height);
+	MedianeWithBlurImg.setTabPixels(MedianewithBlur);
+	MedianeWithBlurImg.setName("../Photos/MedianeWithBlur.jpg");
+	MedianeWithBlurImg.saveImg();
 
 
 
@@ -88,23 +73,23 @@ int main(int argc, char* argv[])
 	std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
 	//fading
 	if (fading == "opaque") {
-		Image* MasqueAppliquer = new Image(width,height, "../Photos/MasqueAppliquer.jpg");
-		MasqueAppliquer->setTabPixels(MedianeAndMasque);
-		MasqueAppliquer->saveImg();
+		Image MasqueAppliquer(width,height, "../Photos/MasqueAppliquer.jpg");
+		MasqueAppliquer.setTabPixels(MedianeAndMasque);
+		MasqueAppliquer.saveImg();
 	}
 	if (fading == "plus") {
-		Image* fading_jpeg_front = new Image(width, height, "../Photos/fading_image_front.jpg");
+		Image fading_jpeg_front(width, height, "../Photos/fading_image_front.jpg");
 		Pixels** fading_image_front = Fading_front(tabImage, Mediane, nbFichiers,width, height);
-		fading_jpeg_front->setTabPixels(fading_image_front);
-		fading_jpeg_front->saveImg();
+		fading_jpeg_front.setTabPixels(fading_image_front);
+		fading_jpeg_front.saveImg();
 	}
 	if (fading == "moins") {
 
 
-		Image* fading_jpeg_back = new Image(width, height, "../Photos/fading_image_back.jpg");
+		Image fading_jpeg_back(width, height, "../Photos/fading_image_back.jpg");
 		Pixels** fading_image_back = Fading_back(tabImage, Mediane,nbFichiers, width, height);
-		fading_jpeg_back->setTabPixels(fading_image_back);
-		fading_jpeg_back->saveImg();
+		fading_jpeg_back.setTabPixels(fading_image_back);
+		fading_jpeg_back.saveImg();
 		
 	}
 	std::cout << "---------------------" << std::endl << "Programme termine" << std::endl << "---------------------" << std::endl;

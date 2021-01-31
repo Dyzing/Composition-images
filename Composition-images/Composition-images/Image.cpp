@@ -93,13 +93,13 @@ void Image::TabToPixels(Pixels** pix, corona::Image* img) {
 		for (int j = 0; j < width; ++j) {
 			tmp = pix[i][j];
 			*iter = tmp.red;
-			*iter++;
+			*++iter;
 			*iter = tmp.green;
-			*iter++;
+			*++iter;
 			*iter = tmp.blue;
-			*iter++;
+			*++iter;
 			*iter = tmp.alpha;
-			*iter++;
+			*++iter;
 		}
 	}
 }

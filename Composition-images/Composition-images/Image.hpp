@@ -9,7 +9,6 @@ struct Pixels {
 	int red;
 	int green;
 	int blue;
-	int alpha;
 
 };
 /// <summary>
@@ -20,7 +19,6 @@ struct PixelsFloat {
 	float red;
 	float green;
 	float blue;
-	float alpha;
 };
 typedef unsigned char byte;
 
@@ -45,7 +43,7 @@ private:
 	/// <summary>
 	/// Image sous forme de corona::image
 	/// </summary>
-	corona::Image* img;
+	corona::Image* corImg;
 	/// <summary>
 	/// Nom de l'image (chemin complet)
 	/// </summary>
@@ -67,6 +65,7 @@ public:
 	/// </summary>
 	/// <param name="name">Nom de l'image(Mettre le chemin)</param>
 	Image(const char* name);
+	Image(const Image& img);
 	~Image();
 	/// <summary>
 	/// Retourne la largeur
@@ -79,10 +78,23 @@ public:
 	/// <returns>height</returns>
 	int getHeight() const;
 	/// <summary>
+	/// retourne le pixel a la position i,j
+	/// </summary>
+	/// <returns></returns>
+	Pixels getPix(int i, int j) const;
+	/// <summary>
+	/// retourne l'image
+	/// </summary>
+	corona::Image* getImg() const;
+	/// <summary>
+	/// retourne name
+	/// </summary>
+	std::string getName() const;
+	/// <summary>
 	/// Retourne le tableau de pixels
 	/// </summary>
 	/// <returns>tabPixels</returns>
-	Pixels** getTabPixels() const;
+	Pixels** getTabPixels() ;
 	/// <summary>
 	/// Initialise un tableau avec comme valeur par défaut {0,0,0,255}
 	/// </summary>
@@ -116,4 +128,15 @@ public:
 	/// Sauvegarde l'image a partir de son nom
 	/// </summary>
 	void saveImg();
+	/// <summary>
+	/// Idiome Swap
+	/// </summary>
+	/// <param name="img">Swap avec l'img</param>
+	void swap(Image& img);
+	/// <summary>
+	/// Operateur d'affectation
+	/// </summary>
+	/// <param name="img">Image a affecter</param>
+	/// <returns></returns>
+	Image& operator=(const Image& img);
 };

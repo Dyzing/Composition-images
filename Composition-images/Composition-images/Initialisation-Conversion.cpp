@@ -1,7 +1,17 @@
 ﻿#include "Initialisation-Conversion.hpp"
 
 
+Pixels** init(int largeur, int hauteur) {
+	Pixels** tab = new Pixels * [hauteur];
+	for (int i = 0; i < hauteur; i++) {
+		tab[i] = new Pixels[largeur];
 
+		for (int j = 0; j < largeur; j++) {
+			tab[i][j] = { 0,0,0};
+		}
+	}
+	return tab;
+}
 Image* initImage(std::list<std::string> arguments) {
 	Image* img;
 	int n = arguments.size();
@@ -111,6 +121,8 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 			fading = fadingOpt;
 		}
 	}
+
+
 
 	
 }

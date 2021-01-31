@@ -18,8 +18,13 @@
 /// <returns>Tableau comportant toutes les images</returns>
 Image* initImage(std::list<std::string> arguments);
 
-
-
+/// <summary>
+/// Initialise un tableau de pixels
+/// </summary>
+/// <param name="largeur">Largeur</param>
+/// <param name="hauteur">Hauteur</param>
+/// <returns>Retourne un tableau initialise</returns>
+Pixels** init(int largeur, int hauteur);
 
 /// <summary>
 /// Valide ou non le chemin passé en parametre

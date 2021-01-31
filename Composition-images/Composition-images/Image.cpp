@@ -1,8 +1,8 @@
 #include "Image.hpp"			 	      	   	  
 
 Image::Image() {
-	width = 1280;
-	height = 720;
+	width = 0;
+	height = 0;
 	name = "";
 	tabPixels = init(width, height);
 	corImg = corona::CreateImage(width, height, corona::PF_R8G8B8);
@@ -18,7 +18,7 @@ Image::Image(const char* name) {
 	corImg = corona::OpenImage(name, corona::PF_R8G8B8);
 	width = corImg->getWidth();
 	height = corImg->getHeight();
-	name = "";
+	this->name = name;
 	tabPixels = ImageToPixels(corImg);
 }
 Image::Image(const Image& img) {

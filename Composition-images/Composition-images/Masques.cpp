@@ -17,6 +17,7 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int 
 		}
 	}
 	tabFinal = plusGrandConnexe(tabFinal, height, width);
+
 	Image MasqueAppliquer(width, height, "../Photos/Masque" + std::to_string(n) + ".jpg");
 	MasqueAppliquer.setTabPixels(tabFinal);
 	MasqueAppliquer.saveImg();
@@ -96,6 +97,11 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width) {
 			}
 		}
 	}
+	for (int i = 0; i < height; i++)
+	{
+			delete[] connex[i];
+	}
+	delete[] connex;
 	return connexMax;
 }
 
@@ -127,6 +133,13 @@ Pixels** MultiMasque(Pixels** Mediane, Image* tabImage,int nb, Pixels** fond, in
 		pixels = tabImage[x].getTabPixels();
 		masque = CreationMasque(Mediane, pixels, width, height, x);
 		resFinal = AppliquerMasque(resFinal, pixels, masque, width, height);
+		for (int i = 0; i < height; i++)
+		{
+			delete[] masque[i];
+			delete[] pixels[i];
+		}
+		delete[] masque;
+		delete[] pixels;
 	}
 	
 	return resFinal;
@@ -148,13 +161,18 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 			sum_g = 0;
 			sum_b = 0;
 
-			for (Pixels** pixels : tabPixels)
+			for (int i = 0; i < tabPixels.size(); i++)
 			{
-				p = pixels[x][y];
+				Pixels** tmp = tabPixels.front();
 
-				sum_r += p.red;
-				sum_g += p.green;
-				sum_b += p.blue;
+				sum_r += tmp[x][y].red;
+				sum_g += tmp[x][y].green;
+				sum_b += tmp[x][y].blue;
+				tabPixels.pop_front();
+				for (int i = 0; i < height; i++) {
+					delete[] tmp[i];
+				}
+				delete[] tmp;
 			}
 
 
@@ -177,11 +195,19 @@ Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int he
 		tabPixels.push_back(tabImage[x].getTabPixels());
 	}
 	tempPix.push_back(tabPixels.front());
+	for (int x = 0; x < height; ++x) {
+		delete []tabPixels.front()[x];
+	}
+	delete[]tabPixels.front();
 	tabPixels.pop_front();
 	int nbtabPixels = tabPixels.size();
 	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
 		tempPix.push_back(tabPixels.front());
+		for (int x = 0; x < height; ++x) {
+			delete[]tabPixels.front()[x];
+		}
+		delete[]tabPixels.front();
 		tabPixels.pop_front();
 		res_moy = MoyenneNimages(tempPix, width, height);
 		tempPix.clear();
@@ -190,7 +216,10 @@ Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int he
 
 	Pixels** masque = CreationMasque(Mediane, tabPixels.back(), width, height, 101);
 	res_moy = AppliquerMasque(res_moy, tabPixels.back(), masque, width, height);
-
+	for (int x = 0; x < height; ++x) {
+		delete[]tempPix.front()[x];
+	}
+	delete[]tempPix.front();
 	return res_moy;
 }
 

@@ -79,16 +79,14 @@ int main(int argc, char* argv[])
 	}
 	if (fading == "plus") {
 		Image fading_jpeg_front(width, height, "../Photos/fading_image_front.jpg");
-		Pixels** fading_image_front = Fading_front(tabImage, Mediane, nbFichiers,width, height);
-		fading_jpeg_front.setTabPixels(fading_image_front);
+		fading_jpeg_front.setTabPixels(Fading_front(tabImage, Mediane, nbFichiers, width, height));
 		fading_jpeg_front.saveImg();
 	}
 	if (fading == "moins") {
 
 
 		Image fading_jpeg_back(width, height, "../Photos/fading_image_back.jpg");
-		Pixels** fading_image_back = Fading_back(tabImage, Mediane,nbFichiers, width, height);
-		fading_jpeg_back.setTabPixels(fading_image_back);
+		fading_jpeg_back.setTabPixels(Fading_back(tabImage, Mediane, nbFichiers, width, height));
 		fading_jpeg_back.saveImg();
 		
 	}

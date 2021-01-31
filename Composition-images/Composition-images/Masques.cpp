@@ -32,6 +32,7 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int 
 	return tabFinal;
 }
 
+
 int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, int y) {
 
 	std::tuple<int, int> t;

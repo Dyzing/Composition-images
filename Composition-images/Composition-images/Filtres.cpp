@@ -4,9 +4,9 @@
 
 
 Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
-	corona::Image* cop = corona::CreateImage(width, height, corona::PF_R8G8B8A8);
-	TabToPixels(img, cop);
-	Pixels** pix = ImageToPixels(cop);
+	Image* cop = new Image();
+	cop->setTabPixels(img);
+	Pixels** pix = cop->getTabPixels();
 	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
 	PixelsFloat sumVois = { 0,0,0,255 };
 	for (int x = 2; x < height - 2; x++) {
@@ -93,22 +93,23 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 
 Pixels** median_images(std::list<Pixels**> images, int width, int height) {
 
-	Pixels** tab = init(width, height);
-	const int size = 50;
+	Image* tmp = new Image();
+	Pixels** tab = tmp->getTabPixels();
 	std::list<int> valR;
 	std::list<int> valG;
 	std::list<int> valB;
-
+	Pixels** pixels;
 	int n;
 	Pixels p;
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			n = 0;
-			valR = {};
-			valG = {};
-			valB = {};
+			valR.clear();
+			valG.clear();
+			valB.clear();
 			std::list<int>::iterator it;
-			for (Pixels** pixels : images) {
+			for (int x = 0; x < nb; ++x) {
+				pixels = images[x].getTabPixels();
 				n += 1;
 				p = pixels[i][j];
 				valR.push_back(p.red);

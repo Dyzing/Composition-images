@@ -27,4 +27,4 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius);
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns></returns>
-Pixels** median_images(std::list<Pixels**> images, int width, int height);
+Pixels** median_images(Image* images,int nb, int width, int height);

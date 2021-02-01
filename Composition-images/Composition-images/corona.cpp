@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
 	Image* tabImage;
 	std::list<std::string> files;
 	std::string fading = "opaque";
-	getParams(argc,argv,files,fading);
+	int overlap, distance;
+	getParams(argc,argv,files,fading,overlap,distance);
 	int nbFichiers = files.size();
 
 

@@ -84,7 +84,7 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
 	return std::find(begin, end, option) != end;
 }
 
-void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading) {
+void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading, int& overlap, int& distance) {
 
 	//Recuperation de fichiers � partir d'un dossier
 	if (cmdOptionExists(argv, argv + argc, "-dir"))
@@ -121,8 +121,17 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 			fading = fadingOpt;
 		}
 	}
+	if (cmdOptionExists(argv, argv + argc, "-overlap")) {
+		std::string overlapOpt = getCmdOption(argv, argv + argc, "-overlap");
+		overlap = std::stoi(overlapOpt);
+		std::cout << "OVERLAP IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+	}
 
-
+	if (cmdOptionExists(argv, argv + argc, "-distance")) {
+		std::string distanceOpt = getCmdOption(argv, argv + argc, "-distance");
+		distance = std::stoi(distanceOpt);
+		std::cout << "DISTANCE IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+	}
 
 	
 }

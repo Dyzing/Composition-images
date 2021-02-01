@@ -4,14 +4,13 @@
 
 
 Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
-	Image* cop = new Image();
-	cop->setTabPixels(img);
-	Pixels** pix = cop->getTabPixels();
+	
+	Pixels** pix = init(width, height);
 	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
-	PixelsFloat sumVois = { 0,0,0,255 };
+	PixelsFloat sumVois = { 0,0,0};
 	for (int x = 2; x < height - 2; x++) {
 		for (int y = 2; y < width - 2; y++) {
-			sumVois = { 0,0,0,255 };
+			sumVois = { 0,0,0};
 			for (int xvois = x - 2; xvois < x + 3; xvois++) {
 				if (xvois >= 0 and xvois < height) {
 					for (int yvois = y - 2; yvois < y + 3; yvois++) {
@@ -24,7 +23,7 @@ Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
 					}
 				}
 			}
-			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue ,(int)sumVois.alpha };
+			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue};
 
 		}
 	}
@@ -34,8 +33,7 @@ Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
 
 Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 
-	Image* img = new Image(width, height);
-	Pixels** tab = img->getTabPixels();
+	Pixels** tab = init(width, height);
 	std::list<int> valR;
 	std::list<int> valG;
 	std::list<int> valB;
@@ -87,15 +85,13 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 			tab[i][j].blue = *it;
 		}
 	}
-
 	return tab;
 }
 
 
 Pixels** median_images(Image* images, int nb, int width, int height) {
 
-	Image* tmp = new Image(width, height);
-	Pixels** tab = tmp->getTabPixels();
+	Pixels** tab = init(width, height);
 	std::list<int> valR;
 	std::list<int> valG;
 	std::list<int> valB;

@@ -1,7 +1,17 @@
 ﻿#include "Initialisation-Conversion.hpp"
 
 
+Pixels** init(int largeur, int hauteur) {
+	Pixels** tab = new Pixels * [hauteur];
+	for (int i = 0; i < hauteur; i++) {
+		tab[i] = new Pixels[largeur];
 
+		for (int j = 0; j < largeur; j++) {
+			tab[i][j] = { 0,0,0};
+		}
+	}
+	return tab;
+}
 Image* initImage(std::list<std::string> arguments) {
 	Image* img;
 	int n = arguments.size();
@@ -59,8 +69,22 @@ std::list<std::string> FindFilesInDirectory(std::string dir) {
 	lst.pop_front();
 	return lst;
 }
+char* getCmdOption(char** begin, char** end, const std::string& option)
+{
+	char** itr = std::find(begin, end, option);
+	if (itr != end && ++itr != end)
+	{
+		return *itr;
+	}
+	return 0;
+}
 
-void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading) {
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{	
+	return std::find(begin, end, option) != end;
+}
+
+void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading, int& overlap, int& distance) {
 
 	//Recuperation de fichiers � partir d'un dossier
 	if (cmdOptionExists(argv, argv + argc, "-dir"))
@@ -96,6 +120,17 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 		if ((fadingOpt == "opaque") or (fadingOpt == "plus") or (fadingOpt == "moins")) {
 			fading = fadingOpt;
 		}
+	}
+	if (cmdOptionExists(argv, argv + argc, "-overlap")) {
+		std::string overlapOpt = getCmdOption(argv, argv + argc, "-overlap");
+		overlap = std::stoi(overlapOpt);
+		std::cout << "OVERLAP IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+	}
+
+	if (cmdOptionExists(argv, argv + argc, "-distance")) {
+		std::string distanceOpt = getCmdOption(argv, argv + argc, "-distance");
+		distance = std::stoi(distanceOpt);
+		std::cout << "DISTANCE IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
 	}
 
 	

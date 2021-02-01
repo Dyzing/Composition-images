@@ -77,8 +77,7 @@ Pixels** Image::ImageToPixels(corona::Image* img) {
 	Pixels** tab = init(width, height);
 	int red, green, blue;
 	byte* p;
-	// we're guaranteed that the first eight bits of every pixel is red,
-	// the next eight bits is green, and so on...
+	//On est garantis que les 8 premiers bytes correspondent au pixel Rouge, puis vert et ainsi de suite
 	p = (byte*)pixels;
 	for (int x = 0; x < height; ++x) {
 		for (int j = 0; j < width; ++j) {

@@ -7,27 +7,16 @@
 #include <tuple>
 
 Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int n) {
-	Img = FlouGaussien(Img, width, height);
+	Img = FlouGaussien(Img, width, height); //j'applique le fou gaussien afin de réduire le bruits au moment de faire les masques
 	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			tabFinal[i][j].red = std::abs(Fond[i][j].red - Img[i][j].red);
+			tabFinal[i][j].red = std::abs(Fond[i][j].red - Img[i][j].red); //je fais la différence absolue de chaque composantes des pixels afin d'avoir une image différence entre l'image de fond et l'image avec un seul personnage. 
 			tabFinal[i][j].green = std::abs(Fond[i][j].green - Img[i][j].green);
 			tabFinal[i][j].blue = std::abs(Fond[i][j].blue - Img[i][j].blue);
 		}
 	}
-	tabFinal = plusGrandConnexe(tabFinal, height, width);
-
-	/*Image MasqueAppliquer(width, height, "../Photos/Masque" + std::to_string(n) + ".jpg");
-	MasqueAppliquer.setTabPixels(tabFinal);
-	MasqueAppliquer.saveImg();*/
-	//std::string test = std::to_string(n);
-	//std::string test2 = "../Photos/Masque";
-	//test2 += test + ".jpg";
-	//char* cstr;
-	//cstr = &test2[0];
-
-
+	tabFinal = plusGrandConnexe(tabFinal, height, width); //je fais le plus grandConnexe pour enlever le plus de bruit possible et de garder au maximuim seulement le masque
 
 	return tabFinal;
 }
@@ -141,7 +130,7 @@ Pixels** MultiMasque(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, i
 
 Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 {
-	
+	//La moyenne n image fonctionne ainsi : je récupère les valeurs de chaque pixel dans chaque image à chaque points donnés et j'en fait la moyenne dans l'image résultat.
 	Pixels** image_res = init(width, height);
 	int max_r, max_g, max_b, sum_r, sum_g, sum_b;
 	Pixels p;
@@ -157,13 +146,13 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 			for (Pixels** pixels : tabPixels)
 			{
 				p = pixels[x][y];
-
+				//je fais la somme de chaque composantes des pixels
 				sum_r += p.red;
 				sum_g += p.green;
 				sum_b += p.blue;
 			}
 
-
+			//je fais la moyenne de chaque composantes des pixels
 			max_r = int(sum_r / N);
 			max_g = int(sum_g / N);
 			max_b = int(sum_b / N);
@@ -176,23 +165,26 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 
 Pixels** Fading_front(Image* tabImage, Pixels** Mediane, int nb, int width, int height)
 {
-	
+	//Le principe des Fading est que je fais une moyenne des 2 premières images que je stocke dans un autre image temporaire.
+	//Puis je fais une autre moyenne avec la troisième et l'image temporaire. Je fais ce traitement ainsi de suite afin d'avoir des images de plus en plus moyennées.
+	//Ainsi, je me retrouve avec des images de plus en plus transparentes. On a choisi de mettre la première ou la dernière en opaque histoire d'avoir un rendu plus logique et agréable.
+	//Dans le cas du Fading_front, je récupère les fronts de chaque liste.
 	Pixels** res_moy = init(width, height);
 	std::list<Pixels**> tabPixels;
-	std::list<Pixels**> tempPix;
+	std::list<Pixels**> tempPix; //tempPix équivaut à la liste des images à moyenner que je renitialise à chaque tour et que je re push_back le résultat de la moyenne calculée.
 	for (int x = 0; x < nb; ++x) {
 		tabPixels.push_back(tabImage[x].getTabPixels());
 	}
-	tempPix.push_back(tabPixels.front());
+	tempPix.push_back(tabPixels.front()); //j'ajoute l'image d'après dans le temPix afin de pouvoir calculer la moyenne avec l'image déjà présente.
 	tabPixels.pop_front();
 	int nbtabPixels = tabPixels.size();
 	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
 		tempPix.push_back(tabPixels.front());
 		tabPixels.pop_front();
-		res_moy = MoyenneNimages(tempPix, width, height);
+		res_moy = MoyenneNimages(tempPix, width, height); //fait la moyenne des deux éléments dans le tempPix
 		tempPix.clear();
-		tempPix.push_back(res_moy);
+		tempPix.push_back(res_moy); //je met le résultat de la moyenne dans le temPix pour ainsi calculer la moyenne de l'image d'après avec la moyenne calculée.
 	}
 
 	Pixels** masque = CreationMasque(Mediane, tabPixels.back(), width, height, 101);
@@ -203,10 +195,13 @@ Pixels** Fading_front(Image* tabImage, Pixels** Mediane, int nb, int width, int 
 
 Pixels** Fading_back(Image* tabImage, Pixels** Mediane, int nb, int width, int height)
 {
-	
+	//Le principe des Fading est que je fais une moyenne des 2 premières images que je stocke dans un autre image temporaire.
+	//Puis je fais une autre moyenne avec la troisième et l'image temporaire. Je fais ce traitement ainsi de suite afin d'avoir des images de plus en plus moyennées.
+	//Ainsi, je me retrouve avec des images de plus en plus transparentes. On a choisi de mettre la première ou la dernière en opaque histoire d'avoir un rendu plus logique et agréable.
+	//Dans le cas du Fading_front, je récupère les backs de chaque liste.
 	Pixels** res_moy = init(width, height);
 	std::list<Pixels**> tabPixels;
-	std::list<Pixels**> tempPix;
+	std::list<Pixels**> tempPix; //tempPix équivaut à la liste des images à moyenner que je renitialise à chaque tour et que je re push_back le résultat de la moyenne calculée.
 	for (int x = 0; x < nb; ++x) {
 		tabPixels.push_back(tabImage[x].getTabPixels());
 	}
@@ -215,11 +210,11 @@ Pixels** Fading_back(Image* tabImage, Pixels** Mediane, int nb, int width, int h
 	int nbtabPixels = tabPixels.size();
 	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
-		tempPix.push_back(tabPixels.back());
+		tempPix.push_back(tabPixels.back()); //j'ajoute l'image d'après dans le temPix afin de pouvoir calculer la moyenne avec l'image déjà présente.
 		tabPixels.pop_back();
-		res_moy = MoyenneNimages(tempPix, width, height);
+		res_moy = MoyenneNimages(tempPix, width, height); //fait la moyenne des deux éléments dans le tempPix
 		tempPix.clear();
-		tempPix.push_back(res_moy);
+		tempPix.push_back(res_moy); //je met le résultat de la moyenne dans le temPix pour ainsi calculer la moyenne de l'image d'après avec la moyenne calculée.
 	}
 
 	Pixels** masque = CreationMasque(Mediane, tabPixels.front(), width, height, 102);
@@ -228,146 +223,6 @@ Pixels** Fading_back(Image* tabImage, Pixels** Mediane, int nb, int width, int h
 	return res_moy;
 }
 
-/*
-int cc_size(Pixels** im, int width, int height, int x, int y)
-{
-	std::tuple<int, int> start = { x, y };
-	std::stack< std::tuple<int, int> > deque;
-	int compteur = 0;
-
-	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tolérance
-	{
-		compteur = 1;
-		deque.push(start);
-		im[x][y] = { 0, 0, 0, 255 };
-		while (deque.size() > 0)
-		{
-			x = std::get<0>(deque.top());
-			y = std::get<1>(deque.top());
-			deque.pop();
-
-			for (int i = x - 1; i < x + 2; i++)
-			{
-				if (i >= 0 && i < height)
-				{
-					for (int j = y - 1; j < y + 2; j++)
-					{
-						if (j >= 0 && j < width)
-						{
-							if (i != x || j != y)
-							{
-								if (!(im[i][j].red <= 25 && im[i][j].green <= 25 && im[i][j].blue <= 25))
-								{
-									deque.push({ i, j });
-									im[i][j] = { 0, 0, 0, 255 };
-									++compteur;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return compteur;
-}
-
-Pixels** cc_size_tab(Pixels** im, int width, int height, int x, int y)
-{
-	std::tuple<int, int> start = { x, y };
-	std::stack< std::tuple<int, int> > deque;
-	Image* tmp = new Image(width, height);
-	Pixels** tab = tmp->getTabPixels();
-	int compteur = 0;
-
-	if (!(im[x][y].red <= 25 && im[x][y].green <= 25 && im[x][y].blue <= 25)) //a changer si on veut faire en fontion de la tol�rance
-	{
-		compteur = 1;
-		deque.push(start);
-		im[x][y] = {0, 0, 0, 255};
-		while (deque.size() > 0)
-		{
-			x = std::get<0>(deque.top());
-			y = std::get<1>(deque.top());
-			deque.pop();
-
-			for (int i = x-1; i < x+2; i++)
-			{
-				if (i >= 0 && i < height)
-				{
-					for (int j = y-1; j < y+2; j++)
-					{
-						if (j >= 0 && j < width)
-						{
-							if (i != x || j != y)
-							{
-								if (!(im[i][j].red <= 25 && im[i][j].green <= 25 && im[i][j].blue <= 25))
-								{
-									deque.push({ i, j });
-									tab[i][j] = im[i][j];
-									im[i][j] = { 0, 0, 0, 255 };
-									++compteur;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return tab;
-}
-
-Pixels** remove_cc(Pixels** im, int width, int height, int x, int y)
-{
-	std::tuple<int, int> start = { x, y };
-	std::stack< std::tuple<int, int> > deque;
-
-
-
-
-Pixels** filter_cc(Pixels** im, int width, int height, int minSize)
-{
-	Image* cop = new Image(width, height);
-	cop->setTabPixels(im);
-	Pixels** pix2 = cop->getTabPixels();
-	int nb_cc_size;
-
-	for (int x = 0; x < height; x++)
-	{
-		for (int y = 0; y < width; y++)
-		{
-			nb_cc_size = cc_size(pix2, width, height, x, y);
-			if (0 < nb_cc_size && nb_cc_size <= minSize)
-			{
-				remove_cc(im, width, height, x, y);
-			}
-		}
-	}
-	return im;
-}
-
-Pixels** biggest_cc(Pixels** im, int width, int height)
-{
-	Image* cop = new Image(width, height);
-	cop->setTabPixels(im);
-	Pixels** pix2 = cop->getTabPixels();
-	int biggersize = 0;
-	int currentsize;
-	for (int x = 0; x < height; x++)
-	{
-		for (int y = 0; y < width; y++)
-		{
-			currentsize = cc_size(pix2, width, height, x, y);
-			if (currentsize > biggersize)
-			{
-				biggersize = currentsize;
-			}
-		}
-	}
-	return filter_cc(im, width, height, biggersize);
-}
-*/
 
 void InitTabBool(bool* tab, int const& nb)
 {
@@ -395,11 +250,10 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 	bool* tabDejaVu = new bool[nb];
 	InitTabBool(tabMasqueValide, nb);
 	InittabNbOver(tabNbOver, nb);
-	InitTabBool(tabDejaVu, nb);
 	int indexImageValide = 0;
 
-	Image* ImagesValides = new Image[nb]; //remplit la liste d'image
-	std::vector<Pixels**> imageMasquee;
+	Image* ImagesValides = new Image[nb]; //tableau des images valides selon le critère
+	std::vector<Pixels**> imageMasquee; //vecteur permettant de stocker les masques à utiliser
 
 	Pixels** masque;
 
@@ -407,7 +261,7 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 	{
 		InitTabBool(tabDejaVu, nb);
 		tabMasqueValide[i] = true;
-		masque = CreationMasque(Mediane, tabImage[i].getTabPixels(), width, height, i);
+		masque = CreationMasque(Mediane, tabImage[i].getTabPixels(), width, height, i); //création des masques au fur et à mesure de l'algorithme
 		imageMasquee.push_back(masque);
 		tabpixelCourant = imageMasquee[i];
 		int x = 0;
@@ -416,25 +270,24 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 			int y = 0;
 			while (y < width && tabMasqueValide[i])
 			{
-				if (tabpixelCourant[x][y] > 15)
+				if (tabpixelCourant[x][y] > 15) //si le pixel du masque courant fait partie de la silhouette du personnage
 				{
 					for (int j = 0; j < i; j++)
 					{
 						if (tabMasqueValide[j])
 						{
 							tabpixelMasques = imageMasquee[j];
-							if (tabDejaVu[j] == false)
+							if (tabDejaVu[j] == false) //si j'ai déjà traité une intersection avec le j-ième masque
 							{
-								if (tabpixelMasques[x][y] > 15)
+								if (tabpixelMasques[x][y] > 15) //si il y a une intersection avec le masque courant et le j-ième masque
 								{
-									//intersection
-									if (tabNbOver[j] + 1 <= overmax)
+									if (tabNbOver[j] + 1 <= overmax) //si cette intersection ne dépasse pas le nombre de superposition autorisé par overmax
 									{
 										++tabNbOver[j];
 										++tabNbOver[i];
 										tabDejaVu[j] = true;
 									}
-									else
+									else //sinon je ne valide pas ce masque et ne sera plus utilisé pour la suite du traitement de l'algorithme
 									{
 										tabNbOver[i] = 0;
 										tabMasqueValide[i] = false;
@@ -443,7 +296,7 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 							}
 						}
 					}
-					if (tabDejaVu[i] == false)
+					if (tabDejaVu[i] == false) //si j'ai déjà trouvé au moins 1 pixel dans le masque courant, ainsi j'augmente sa superposition de 1 (superposition minimale logique)
 					{
 						++tabNbOver[i];
 						tabDejaVu[i] = true;
@@ -453,14 +306,14 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 			}
 			++x;
 		}
-		if (tabMasqueValide[i])
+		if (tabMasqueValide[i]) //si mon masque à la fin de son traitement est valide, je rentre son image associée dans le tableau des images valide
 		{
 			ImagesValides[indexImageValide] = tabImage[i];
 			indexImageValide += 1;
 		}
 	}
 
-	Pixels** resultat = MultiMasque(Mediane, ImagesValides, indexImageValide, fond, width, height);
+	Pixels** resultat = MultiMasque(Mediane, ImagesValides, indexImageValide, fond, width, height); //j'applique les masques et les images sur l'image de fond selon le tableau des images valide
 
 	return resultat;
 }

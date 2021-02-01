@@ -7,28 +7,6 @@
 #include <numeric>
 #include "corona.hpp"
 
-
-
-
-
-//void Connexe() {
-//	corona::Image* masqueImg = corona::OpenImage("../Photos/Masque2.jpg", corona::PF_R8G8B8A8); // Retirer le commentaire si l'image mediane est deja creee, gain de temps
-//	Pixels** masque = ImageToPixels(masqueImg);
-//
-//	int width = masqueImg->getWidth();
-//	int height = masqueImg->getHeight();
-//
-//	Pixels** connexMax = init(width, height);
-//
-//	//int taille = tailleConnexe(masque, connexMax, height, width, 317, 61);
-//	connexMax = plusGrandConnexe(masque, height, width);
-//
-//	TabToPixels(connexMax, masqueImg);
-//	corona::SaveImage("../Photos/MasqueWithConnexe.jpg", corona::FileFormat::FF_PNG, masqueImg);
-//
-//
-//}
-
 int main(int argc, char* argv[])
 {
 	std::cout << std::endl << "---------------------" << std::endl << "Initialisation du Programme" << std::endl << "---------------------" << std::endl;
@@ -36,6 +14,7 @@ int main(int argc, char* argv[])
 	std::list<std::string> files;
 	std::string fading = "opaque";
 	int overlaps, distance;
+	std::string jpeg = argv[argc -1];
 	getParams(argc,argv,files,fading,overlaps,distance);
 	int nbFichiers = files.size();
 
@@ -66,36 +45,33 @@ int main(int argc, char* argv[])
 
 
 
-	//std::cout << "---------------------" << std::endl << "Extraction des sujets et integration sur l'image de fond" << std::endl << "---------------------" << std::endl;
-	//Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height);
+	std::cout << "---------------------" << std::endl << "Extraction des sujets et integration sur l'image de fond" << std::endl << "---------------------" << std::endl;
+	Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height);
 
 
 
 	//std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
 	////fading
 	//if (fading == "opaque") {
-	//	Image MasqueAppliquer(width,height, "../Photos/MasqueAppliquer.jpg");
+	//	Image MasqueAppliquer(width,height, jpeg);
 	//	MasqueAppliquer.setTabPixels(MedianeAndMasque);
 	//	MasqueAppliquer.saveImg();
 	//}
 	//if (fading == "plus") {
-	//	Image fading_jpeg_front(width, height, "../Photos/fading_image_front.jpg");
+	//	Image fading_jpeg_front(width, height, jpeg);
 	//	fading_jpeg_front.setTabPixels(Fading_front(tabImage, Mediane, nbFichiers, width, height));
 	//	fading_jpeg_front.saveImg();
 	//}
 	//if (fading == "moins") {
-
-
-	//	Image fading_jpeg_back(width, height, "../Photos/fading_image_back.jpg");
+	//	Image fading_jpeg_back(width, height, jpeg);
 	//	fading_jpeg_back.setTabPixels(Fading_back(tabImage, Mediane, nbFichiers, width, height));
 	//	fading_jpeg_back.saveImg();
-	//	
 	//}
 
 
 	std::cout << "---------------------" << std::endl << "Overleap" << std::endl << "---------------------" << std::endl;
-	Image overleapJPG(width, height, "../Photos/overleapJPG.jpg");
-	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 1);
+	Image overleapJPG(width, height, jpeg);
+	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 2);
 	overleapJPG.setTabPixels(overleapTab);
 	overleapJPG.saveImg();
 

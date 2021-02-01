@@ -102,7 +102,7 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 		char** itr = std::find(debut, end, option);
 		if (itr != argv + argc && itr + 1 != argv + argc) {
 			++itr;
-			while (itr != argv + argc) {
+			while (itr != argv + argc -1) {
 
 				files.push_back(*itr);
 				++itr;

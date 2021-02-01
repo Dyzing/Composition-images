@@ -72,3 +72,9 @@ Pixels** remove_cc(Pixels** im, int width, int height, int x, int y);
 Pixels** filter_cc(Pixels** im, int width, int height, int minSize);
 
 Pixels** biggest_cc(Pixels** im, int width, int height);
+
+Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height, int overmax);
+
+void InitTabBool(bool* tabMasqueValide, int const& nb);
+
+void InittabNbOver(int* tabNbOver, int const& nb);

@@ -107,6 +107,16 @@ int main(int argc, char* argv[])
 		fading_jpeg_back->saveImg();
 		
 	}
+
+
+	std::cout << "---------------------" << std::endl << "Overleap" << std::endl << "---------------------" << std::endl;
+	Image* overleapJPG = new Image(width, height, "../Photos/overleapJPG.jpg");
+	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 2);
+	overleapJPG->setTabPixels(overleapTab);
+	overleapJPG->saveImg();
+
 	std::cout << "---------------------" << std::endl << "Programme termine" << std::endl << "---------------------" << std::endl;
+
+
 
 }

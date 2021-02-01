@@ -37,6 +37,7 @@ public:
 	Image(int, int,std::string = "");
 	Image(const char*);
 	~Image();
+	Image(const Image &  im);
 
 	int getWidth() const;
 	int getHeight() const;

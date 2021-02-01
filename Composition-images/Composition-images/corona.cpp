@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "---------------------" << std::endl << "Overleap" << std::endl << "---------------------" << std::endl;
 	Image overleapJPG(width, height, "../Photos/overleapJPG.jpg");
-	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 2);
+	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 1);
 	overleapJPG.setTabPixels(overleapTab);
 	overleapJPG.saveImg();
 

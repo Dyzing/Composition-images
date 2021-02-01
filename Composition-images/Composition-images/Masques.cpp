@@ -18,9 +18,9 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int 
 	}
 	tabFinal = plusGrandConnexe(tabFinal, height, width);
 
-	Image MasqueAppliquer(width, height, "../Photos/Masque" + std::to_string(n) + ".jpg");
+	/*Image MasqueAppliquer(width, height, "../Photos/Masque" + std::to_string(n) + ".jpg");
 	MasqueAppliquer.setTabPixels(tabFinal);
-	MasqueAppliquer.saveImg();
+	MasqueAppliquer.saveImg();*/
 	//std::string test = std::to_string(n);
 	//std::string test2 = "../Photos/Masque";
 	//test2 += test + ".jpg";
@@ -48,7 +48,7 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 		i = std::get<0>(t);
 		j = std::get<1>(t);
 		p = tab[i][j];
-		if (!(p <= 2)) {
+		if (!(p <= 1)) {
 			count += 1;
 			tab[i][j] = { 0,0,0 };
 
@@ -445,7 +445,7 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 					}
 					if (tabDejaVu[i] == false)
 					{
-						++tabNbOver;
+						++tabNbOver[i];
 						tabDejaVu[i] = true;
 					}
 				}

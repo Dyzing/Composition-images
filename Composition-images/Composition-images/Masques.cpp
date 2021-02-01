@@ -31,6 +31,8 @@ Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int 
 
 	return tabFinal;
 }
+
+
 int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, int y) {
 
 	std::tuple<int, int> t;
@@ -48,14 +50,14 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 		p = tab[i][j];
 		if (!(p <= 2)) {
 			count += 1;
-			tab[i][j] = { 0,0,0};
+			tab[i][j] = { 0,0,0 };
 
 			copyTab[i][j] = p;
 			for (int n = -1; n < 2; n++) {
 				if (!(i + n > height - 1 or i + n < 0)) {
 					for (int k = -1; k < 2; k++) {
 						if (!(j + k > width - 1 or j + k < 0)) {
-								v.push_back(std::make_tuple(i + n, j + k));
+							v.push_back(std::make_tuple(i + n, j + k));
 						}
 					}
 				}
@@ -65,6 +67,7 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 
 	return count;
 }
+
 Pixels** plusGrandConnexe(Pixels** tab, int height, int width) {
 
 	Pixels p;
@@ -99,14 +102,11 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width) {
 	}
 	for (int i = 0; i < height; i++)
 	{
-			delete[] connex[i];
+		delete[] connex[i];
 	}
 	delete[] connex;
 	return connexMax;
 }
-
-
-
 Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int width, int height) {
 
 	Pixels** tabFinal = init(width, height);
@@ -125,7 +125,7 @@ Pixels** AppliquerMasque(Pixels** Fond, Pixels** ImgBase, Pixels** Masque, int w
 }
 
 
-Pixels** MultiMasque(Pixels** Mediane, Image* tabImage,int nb, Pixels** fond, int width, int height) {
+Pixels** MultiMasque(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height) {
 	Pixels** masque;
 	Pixels** resFinal = fond;
 	Pixels** pixels;
@@ -133,20 +133,15 @@ Pixels** MultiMasque(Pixels** Mediane, Image* tabImage,int nb, Pixels** fond, in
 		pixels = tabImage[x].getTabPixels();
 		masque = CreationMasque(Mediane, pixels, width, height, x);
 		resFinal = AppliquerMasque(resFinal, pixels, masque, width, height);
-		for (int i = 0; i < height; i++)
-		{
-			delete[] masque[i];
-		}
-		delete[] masque;
 	}
-	
+
 	return resFinal;
 }
 
 
 Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 {
-
+	
 	Pixels** image_res = init(width, height);
 	int max_r, max_g, max_b, sum_r, sum_g, sum_b;
 	Pixels p;
@@ -159,18 +154,13 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 			sum_g = 0;
 			sum_b = 0;
 
-			for (int i = 0; i < tabPixels.size(); i++)
+			for (Pixels** pixels : tabPixels)
 			{
-				Pixels** tmp = tabPixels.front();
+				p = pixels[x][y];
 
-				sum_r += tmp[x][y].red;
-				sum_g += tmp[x][y].green;
-				sum_b += tmp[x][y].blue;
-				tabPixels.pop_front();
-				for (int i = 0; i < height; i++) {
-					delete[] tmp[i];
-				}
-				delete[] tmp;
+				sum_r += p.red;
+				sum_g += p.green;
+				sum_b += p.blue;
 			}
 
 
@@ -184,8 +174,9 @@ Pixels** MoyenneNimages(std::list<Pixels**> tabPixels, int width, int height)
 	return image_res;
 }
 
-Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int height)
-{ 
+Pixels** Fading_front(Image* tabImage, Pixels** Mediane, int nb, int width, int height)
+{
+	
 	Pixels** res_moy = init(width, height);
 	std::list<Pixels**> tabPixels;
 	std::list<Pixels**> tempPix;
@@ -193,19 +184,11 @@ Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int he
 		tabPixels.push_back(tabImage[x].getTabPixels());
 	}
 	tempPix.push_back(tabPixels.front());
-	for (int x = 0; x < height; ++x) {
-		delete []tabPixels.front()[x];
-	}
-	delete[]tabPixels.front();
 	tabPixels.pop_front();
 	int nbtabPixels = tabPixels.size();
 	for (int i = 0; i < nbtabPixels - 1; i++)
 	{
 		tempPix.push_back(tabPixels.front());
-		for (int x = 0; x < height; ++x) {
-			delete[]tabPixels.front()[x];
-		}
-		delete[]tabPixels.front();
 		tabPixels.pop_front();
 		res_moy = MoyenneNimages(tempPix, width, height);
 		tempPix.clear();
@@ -214,16 +197,13 @@ Pixels** Fading_front(Image* tabImage, Pixels** Mediane,int nb,int width, int he
 
 	Pixels** masque = CreationMasque(Mediane, tabPixels.back(), width, height, 101);
 	res_moy = AppliquerMasque(res_moy, tabPixels.back(), masque, width, height);
-	for (int x = 0; x < height; ++x) {
-		delete[]tempPix.front()[x];
-	}
-	delete[]tempPix.front();
+
 	return res_moy;
 }
 
-Pixels** Fading_back(Image* tabImage, Pixels** Mediane,int nb ,int width, int height)
+Pixels** Fading_back(Image* tabImage, Pixels** Mediane, int nb, int width, int height)
 {
-
+	
 	Pixels** res_moy = init(width, height);
 	std::list<Pixels**> tabPixels;
 	std::list<Pixels**> tempPix;
@@ -237,7 +217,7 @@ Pixels** Fading_back(Image* tabImage, Pixels** Mediane,int nb ,int width, int he
 	{
 		tempPix.push_back(tabPixels.back());
 		tabPixels.pop_back();
-		res_moy = MoyenneNimages(tempPix,width, height);
+		res_moy = MoyenneNimages(tempPix, width, height);
 		tempPix.clear();
 		tempPix.push_back(res_moy);
 	}

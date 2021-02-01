@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "---------------------" << std::endl << "Creation de l'image de fond sans les sujets Termine" << std::endl << "---------------------" << std::endl;
 	Image MedianeImg(width, height);
-	MedianeImg.setTabPixels(MedianewithBlur);
+	MedianeImg.setTabPixels(Mediane);
 	MedianeImg.setName("../Photos/Mediane.jpg");
 	MedianeImg.saveImg();
 	Image MedianeWithBlurImg(width, height);

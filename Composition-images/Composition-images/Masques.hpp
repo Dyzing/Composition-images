@@ -45,7 +45,7 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width);
 /// Fonction appliquant tout les masques correspondant aux images passes en parametre
 /// </summary>
 /// <param name="Mediane">Fond de l'image / Mediane</param>
-/// <param name="tabPixels">Liste des images sous formes de tableau de pixels</param>
+/// <param name="Images">Liste des images</param>
 /// <param name="width">Largeur</param>
 /// <param name="height">Hauteur</param>
 /// <returns>Resultat final comportant le fond + les sujets</returns>
@@ -80,8 +80,30 @@ Pixels** Fading_front(Image* Images, Pixels** Mediane,int nb ,int width, int hei
 /// <returns>Tableau de pixels comportant les sujets de plus en plus transparent</returns>
 Pixels** Fading_back(Image* Images, Pixels** Mediane,int nb ,int width, int height);
 
+/// <summary>
+/// Fonction gerant la superposition des images
+/// </summary>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="tabImage">Liste des images</param>
+/// <param name="nb">Nombre d'images</param>
+/// <param name="fond">Mediane sans le flou</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <param name="overmax">Nombre de superpositions</param>
+/// <returns>Image sans les masques superposes</returns>
 Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height, int overmax);
 
+/// <summary>
+/// Initialise tableau boolean a false
+/// </summary>
+/// <param name="tabMasqueValide">Gere les masques les utiliser</param>
+/// <param name="nb">Nombre de masques total</param>
 void InitTabBool(bool* tabMasqueValide, int const& nb);
 
+
+/// <summary>
+/// Init a 0 un tableau de int
+/// </summary>
+/// <param name="tabNbOver">Tableau d'entiers</param>
+/// <param name="nb">Nombre total</param>
 void InittabNbOver(int* tabNbOver, int const& nb);

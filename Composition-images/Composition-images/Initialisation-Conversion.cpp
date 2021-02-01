@@ -53,21 +53,21 @@ std::list<std::string> FindFilesInDirectory(std::string dir) {
 		sT.append("\\");
 	}
 	else
-		std::cout << "INVALID PATH! ABORTING...", exit(EXIT_SUCCESS);
-	WIN32_FIND_DATAA FindFileData;
+		std::cout << "INVALID PATH! ABORTING...", exit(EXIT_SUCCESS); // Chemin de Dossier invalide
+	WIN32_FIND_DATAA FindFileData; // Pointeur pour les fichiers
 	HANDLE hF;
 	sP = sT;
 	sP.append("\\");
-	sT.append("*");
+	sT.append("*"); // complete le chemin pour tout recuperer
 	std::list<std::string> lst;
-	hF = FindFirstFileA(sT.data(), &FindFileData);
+	hF = FindFirstFileA(sT.data(), &FindFileData); // Trouve le premier fichier du repertoire
 	do {
 		lst.push_back(sP + FindFileData.cFileName);
-	} while (FindNextFileA(hF, &FindFileData));
+	} while (FindNextFileA(hF, &FindFileData)); // Ajoute le nom des fichiers à la liste des fichiers
 	FindClose(hF);
 	lst.pop_front();
-	lst.pop_front();
-	return lst;
+	lst.pop_front(); // Retire le dossier courant ainsi que le dossier parent (. et ..)
+	return lst; // Retourne la liste des fichiers
 }
 char* getCmdOption(char** begin, char** end, const std::string& option)
 {
@@ -84,9 +84,9 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
 	return std::find(begin, end, option) != end;
 }
 
-void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading, int& overlap, int& distance) {
+void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading, int& overlap, int& distance, bool& parDefaut) {
 
-	//Recuperation de fichiers � partir d'un dossier
+	//Recuperation de fichiers a partir d'un dossier
 	if (cmdOptionExists(argv, argv + argc, "-dir"))
 	{
 		char* filename = getCmdOption(argv, argv + argc, "-dir");
@@ -103,7 +103,6 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 		if (itr != argv + argc && itr + 1 != argv + argc) {
 			++itr;
 			while (itr != argv + argc -1) {
-
 				files.push_back(*itr);
 				++itr;
 			}
@@ -111,7 +110,7 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 	}
 	//Recuperation de la video
 	if (cmdOptionExists(argv, argv + argc, "-video")) {
-		std::cout << "NOT IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+		std::cout << "NOT IMPLEMENTED! ABORTING THE MISSION", exit(EXIT_SUCCESS);
 	}
 	//Recuperation de l'option fading
 	if (cmdOptionExists(argv, argv + argc, "-fading")) {
@@ -120,17 +119,20 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 		if ((fadingOpt == "opaque") or (fadingOpt == "plus") or (fadingOpt == "moins")) {
 			fading = fadingOpt;
 		}
+		parDefaut = false;
 	}
+	//Recuperation de l'option overlap
 	if (cmdOptionExists(argv, argv + argc, "-overlap")) {
 		std::string overlapOpt = getCmdOption(argv, argv + argc, "-overlap");
 		overlap = std::stoi(overlapOpt);
-		std::cout << "OVERLAP IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+		parDefaut = false;
 	}
 
+	//Recuperation de l'option overlap
 	if (cmdOptionExists(argv, argv + argc, "-distance")) {
 		std::string distanceOpt = getCmdOption(argv, argv + argc, "-distance");
 		distance = std::stoi(distanceOpt);
-		std::cout << "DISTANCE IS NOT YET IMPLEMENTED! ABORTING...", exit(EXIT_SUCCESS);
+		parDefaut = false;
 	}
 
 	

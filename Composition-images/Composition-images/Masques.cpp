@@ -7,17 +7,16 @@
 #include <tuple>
 
 Pixels** CreationMasque(Pixels** Fond, Pixels** Img, int width, int height, int n) {
-	Img = FlouGaussien(Img, width, height); //j'applique le fou gaussien afin de réduire le bruits au moment de faire les masques
+	Img = FlouGaussien(Img, width, height); // Flou gaussien appliqué pour correspondre à la médiane
 	Pixels** tabFinal = init(width, height);
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			tabFinal[i][j].red = std::abs(Fond[i][j].red - Img[i][j].red); //je fais la différence absolue de chaque composantes des pixels afin d'avoir une image différence entre l'image de fond et l'image avec un seul personnage. 
+			tabFinal[i][j].red = std::abs(Fond[i][j].red - Img[i][j].red); //je fais la différence absolue de chaque composantes des pixels afin d'avoir une image différence entre l'image de fond et l'image avec un seul personnage pour récuperer le masque. 
 			tabFinal[i][j].green = std::abs(Fond[i][j].green - Img[i][j].green);
 			tabFinal[i][j].blue = std::abs(Fond[i][j].blue - Img[i][j].blue);
 		}
 	}
-	tabFinal = plusGrandConnexe(tabFinal, height, width); //je fais le plus grandConnexe pour enlever le plus de bruit possible et de garder au maximuim seulement le masque
-
+	tabFinal = plusGrandConnexe(tabFinal, height, width); //je fais le plusgrandConnexe pour enlever le plus de bruit possible et de garder au maximuim seulement le masque
 	return tabFinal;
 }
 
@@ -27,7 +26,6 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 	std::tuple<int, int> t;
 	std::vector<std::tuple<int, int>> v;
 	v.push_back(std::make_tuple(x, y));
-
 	int count = 0;
 	int i, j;
 	Pixels p;
@@ -37,7 +35,7 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 		i = std::get<0>(t);
 		j = std::get<1>(t);
 		p = tab[i][j];
-		if (!(p <= 1)) {
+		if (!(p <= 1)) { //Petit test pour la tolérence au bruit
 			count += 1;
 			tab[i][j] = { 0,0,0 };
 

@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
 	Image* tabImage;
 	std::list<std::string> files;
 	std::string fading = "opaque";
-	int overlap, distance;
-	getParams(argc,argv,files,fading,overlap,distance);
+	int overlaps, distance;
+	getParams(argc,argv,files,fading,overlaps,distance);
 	int nbFichiers = files.size();
 
 
@@ -66,38 +66,38 @@ int main(int argc, char* argv[])
 
 
 
-	std::cout << "---------------------" << std::endl << "Extraction des sujets et integration sur l'image de fond" << std::endl << "---------------------" << std::endl;
-	Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height);
+	//std::cout << "---------------------" << std::endl << "Extraction des sujets et integration sur l'image de fond" << std::endl << "---------------------" << std::endl;
+	//Pixels** MedianeAndMasque = MultiMasque(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height);
 
 
 
-	std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
-	//fading
-	if (fading == "opaque") {
-		Image MasqueAppliquer(width,height, "../Photos/MasqueAppliquer.jpg");
-		MasqueAppliquer.setTabPixels(MedianeAndMasque);
-		MasqueAppliquer.saveImg();
-	}
-	if (fading == "plus") {
-		Image fading_jpeg_front(width, height, "../Photos/fading_image_front.jpg");
-		fading_jpeg_front.setTabPixels(Fading_front(tabImage, Mediane, nbFichiers, width, height));
-		fading_jpeg_front.saveImg();
-	}
-	if (fading == "moins") {
+	//std::cout << "---------------------" << std::endl << "Application des filtres pour le rendu final" << std::endl << "---------------------" << std::endl;
+	////fading
+	//if (fading == "opaque") {
+	//	Image MasqueAppliquer(width,height, "../Photos/MasqueAppliquer.jpg");
+	//	MasqueAppliquer.setTabPixels(MedianeAndMasque);
+	//	MasqueAppliquer.saveImg();
+	//}
+	//if (fading == "plus") {
+	//	Image fading_jpeg_front(width, height, "../Photos/fading_image_front.jpg");
+	//	fading_jpeg_front.setTabPixels(Fading_front(tabImage, Mediane, nbFichiers, width, height));
+	//	fading_jpeg_front.saveImg();
+	//}
+	//if (fading == "moins") {
 
 
-		Image fading_jpeg_back(width, height, "../Photos/fading_image_back.jpg");
-		fading_jpeg_back.setTabPixels(Fading_back(tabImage, Mediane, nbFichiers, width, height));
-		fading_jpeg_back.saveImg();
-		
-	}
+	//	Image fading_jpeg_back(width, height, "../Photos/fading_image_back.jpg");
+	//	fading_jpeg_back.setTabPixels(Fading_back(tabImage, Mediane, nbFichiers, width, height));
+	//	fading_jpeg_back.saveImg();
+	//	
+	//}
 
 
 	std::cout << "---------------------" << std::endl << "Overleap" << std::endl << "---------------------" << std::endl;
-	Image* overleapJPG = new Image(width, height, "../Photos/overleapJPG.jpg");
+	Image overleapJPG(width, height, "../Photos/overleapJPG.jpg");
 	Pixels** overleapTab = overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 2);
-	overleapJPG->setTabPixels(overleapTab);
-	overleapJPG->saveImg();
+	overleapJPG.setTabPixels(overleapTab);
+	overleapJPG.saveImg();
 
 	std::cout << "---------------------" << std::endl << "Programme termine" << std::endl << "---------------------" << std::endl;
 

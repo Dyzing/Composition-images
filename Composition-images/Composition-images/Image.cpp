@@ -40,16 +40,6 @@ Image::~Image() {
 	delete[] tabPixels;
 }
 
-Image::Image(const Image & im)
-{
-	this->width = im.width;
-	this->height = im.height;
-	this->name = im.name;
-	this->tabPixels = im.tabPixels;
-	this->img = im.img;
-}
-
-
 int Image::getWidth() const {
 	return width;
 }

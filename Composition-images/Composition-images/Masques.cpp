@@ -136,10 +136,8 @@ Pixels** MultiMasque(Pixels** Mediane, Image* tabImage,int nb, Pixels** fond, in
 		for (int i = 0; i < height; i++)
 		{
 			delete[] masque[i];
-			delete[] pixels[i];
 		}
 		delete[] masque;
-		delete[] pixels;
 	}
 	
 	return resFinal;
@@ -418,6 +416,7 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 	InitTabBool(tabMasqueValide, nb);
 	InittabNbOver(tabNbOver, nb);
 	InitTabBool(tabDejaVu, nb);
+	int indexImageValide = 0;
 
 	Image* ImagesValides = new Image[nb]; //remplit la liste d'image
 	std::vector<Pixels**> imageMasquee;
@@ -476,11 +475,12 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 		}
 		if (tabMasqueValide[i])
 		{
-			ImagesValides[i] = tabImage[i];
+			ImagesValides[indexImageValide] = tabImage[i];
+			indexImageValide += 1;
 		}
 	}
 
-	Pixels** resultat = MultiMasque(Mediane, ImagesValides, nb, fond, width, height);
+	Pixels** resultat = MultiMasque(Mediane, ImagesValides, indexImageValide, fond, width, height);
 
 	return resultat;
 }

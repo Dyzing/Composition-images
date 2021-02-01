@@ -101,6 +101,6 @@ int main(int argc, char* argv[])
 
 	std::cout << "---------------------" << std::endl << "Programme termine" << std::endl << "---------------------" << std::endl;
 
-
+	std::cout << "---------------------" << std::endl << "Made by Cedric Chopin / Guillaume Trem / Etienne Gibiat" << std::endl << "---------------------" << std::endl;
 
 }

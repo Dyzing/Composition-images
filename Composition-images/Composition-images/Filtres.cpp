@@ -6,11 +6,11 @@
 Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
 	
 	Pixels** pix = init(width, height);
-	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} };
+	int matConvo[5][5] = { {1, 4, 7, 4, 1},{4, 16, 26, 16, 4},{7, 26, 41, 26, 7},{4, 16, 26, 16, 4},{1, 4, 7, 4, 1} }; // Matrice de convolution
 	PixelsFloat sumVois = { 0,0,0};
 	for (int x = 2; x < height - 2; x++) {
 		for (int y = 2; y < width - 2; y++) {
-			sumVois = { 0,0,0};
+			sumVois = { 0,0,0}; 
 			for (int xvois = x - 2; xvois < x + 3; xvois++) {
 				if (xvois >= 0 and xvois < height) {
 					for (int yvois = y - 2; yvois < y + 3; yvois++) {
@@ -23,7 +23,7 @@ Pixels * *FlouGaussien(Pixels * *img, int width, int height) {
 					}
 				}
 			}
-			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue};
+			pix[x][y] = { (int)sumVois.red,(int)sumVois.green ,(int)sumVois.blue}; //la valeur du pixel de destination est obtenu en faisant la somme des produits des voisins avec leur correspondant dans la matrice de convolution
 
 		}
 	}

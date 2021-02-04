@@ -315,3 +315,90 @@ Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels**fond, int wi
 
 	return resultat;
 }
+
+struct minmax {
+	int ymin;
+	int ymax;
+};
+Pixels** distance(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height, int distMin) {
+
+	Pixels** resultat;
+	Pixels** masque;
+	std::vector<minmax> minmaxdesMasques;
+	int xmin = height, ymin = width, xmax = 0, ymax = 0;
+	bool* tabMasqueValide = new bool[nb];
+	InitTabBool(tabMasqueValide, nb);
+	tabMasqueValide[0] = true;
+	int indexImageValide = 0;
+	masque = CreationMasque(Mediane, tabImage[0].getTabPixels(), width, height, 0);
+	for (int x = 0; x < height; ++x) {
+		for (int y = 0; y < width; ++y) {
+			
+			if (masque[x][y] > 5) {
+				if (x < xmin)
+					xmin = x;
+				if (x > xmax)
+					xmax = x;
+				if (y < ymin)
+					ymin = y;
+				if (y > ymax)
+					ymax = y;
+
+			}
+		}
+	} // Le premier masque est forcément valide car il n'a pas de sujets a tester pour la distance
+	++indexImageValide;
+	minmaxdesMasques.push_back({ymin,ymax });
+	for (int i = 1; i < nb; ++i) {
+		masque = CreationMasque(Mediane, tabImage[i].getTabPixels(), width, height, i);
+		xmax, ymax = 0;
+		xmin = height;
+		ymin = width;
+		for (int x = 0; x < height; ++x) {
+			for (int y = 0; y < width; ++y) {
+				if (masque[x][y] > 13) {
+					if (y < ymin)
+						ymin = y;
+					if (y > ymax)
+						ymax = y;
+
+				}
+			}
+		}
+		minmaxdesMasques.push_back({ymin,ymax }); // On récupère les minimums et maximums de chaque sujets
+		bool toAdd = true;
+		for (int ind = 0; ind < nb; ++ind) {
+			if (i != ind) {
+				if (tabMasqueValide[ind] != false) {
+					if ((std::abs(minmaxdesMasques[i].ymax - minmaxdesMasques[ind].ymin) < distMin || std::abs(minmaxdesMasques[ind].ymax - minmaxdesMasques[i].ymin) < distMin)) { // Si la distance entre les sujets est inférieur a la distance minimale, il sera retirer
+						toAdd = false;
+						break;
+					}
+				}
+			}
+			
+		}
+		if (toAdd) {
+			tabMasqueValide[i] = true;
+			++indexImageValide;
+		}
+	}
+
+	
+	Image* ImagesValides = new Image[indexImageValide];
+	int cpt = 0;
+	for (int i = 0; i < nb; ++i) {
+		if (tabMasqueValide[i] == true) {
+			ImagesValides[cpt] = tabImage[i];  // On ajoute les images qui sont valides par la distance
+			++cpt;
+		}
+			
+	}
+
+	resultat = MultiMasque(Mediane, ImagesValides, indexImageValide, fond, width, height); // Application des masques valides sur l'image
+
+
+	return resultat;
+
+
+}

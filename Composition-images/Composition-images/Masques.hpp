@@ -94,6 +94,19 @@ Pixels** Fading_back(Image* Images, Pixels** Mediane,int nb ,int width, int heig
 Pixels** overlap(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height, int overmax);
 
 /// <summary>
+/// Permet d'ajouter une distance entre les sujets
+/// </summary>
+/// <param name="Mediane">Fond de l'image / Mediane</param>
+/// <param name="tabImage">Liste des images</param>
+/// <param name="nb">Nombre d'images</param>
+/// <param name="fond">Fond sans le flou</param>
+/// <param name="width">Largeur</param>
+/// <param name="height">Hauteur</param>
+/// <param name="distMin">Distance minimale entre 2 sujets</param>
+/// <returns>Image avec les sujets qui respectent la distanciation sociale</returns>
+Pixels** distance(Pixels** Mediane, Image* tabImage, int nb, Pixels** fond, int width, int height, int distMin);
+
+/// <summary>
 /// Initialise tableau boolean a false
 /// </summary>
 /// <param name="tabMasqueValide">Gere les masques les utiliser</param>

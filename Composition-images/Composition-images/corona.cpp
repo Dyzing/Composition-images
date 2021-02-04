@@ -14,15 +14,15 @@ int main(int argc, char* argv[])
 	Image* tabImage;
 	std::list<std::string> files;
 	std::string fading = "";
-	int overlaps = -1, distance = -1;
+	int overlaps = -1, distances = -1;
 	bool parDefaut = true;
 	std::string jpeg = argv[argc - 1];
-	getParams(argc, argv, files, fading, overlaps, distance, parDefaut);
+	getParams(argc, argv, files, fading, overlaps, distances, parDefaut);
 	int nbFichiers = files.size();
 
 
 
-	std::cout << "Parametres recuperes, Nombre de fichiers a traiter : " << nbFichiers << std::endl << "Option Fading : " << fading << std::endl << "Option Overlap : " << overlaps << std::endl << "Option Distance : " << distance << std::endl;
+	std::cout << "Parametres recuperes, Nombre de fichiers a traiter : " << nbFichiers << std::endl << "Option Fading : " << fading << std::endl << "Option Overlap : " << overlaps << std::endl << "Option Distance : " << distances << std::endl;
 	tabImage = initImage(files); // Tableau comportant la liste d'images passe en parametres
 	int width = tabImage[0].getWidth(); //Largeur
 	int height = tabImage[0].getHeight(); //Hauteur
@@ -77,11 +77,11 @@ int main(int argc, char* argv[])
 		overleapJPG.setTabPixels(overleapTab);
 		overleapJPG.saveImg();
 	}
-	if (distance != -1) {
+	if (distances != -1) {
 		std::cout << "---------------------" << std::endl << "Application de la distance" << std::endl << "---------------------" << std::endl;
-		Image distances(width, height, jpeg);
-		distances.setTabPixels(overlap(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, 1));
-		distances.saveImg();
+		Image dist(width, height, jpeg);
+		dist.setTabPixels(distance(MedianewithBlur, tabImage, nbFichiers, Mediane, width, height, distances));
+		dist.saveImg();
 	}
 	if (parDefaut == true) {
 		std::cout << "---------------------" << std::endl << "Insertion des masques par defaut" << std::endl << "---------------------" << std::endl;

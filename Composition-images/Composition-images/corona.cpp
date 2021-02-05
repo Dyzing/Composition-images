@@ -7,6 +7,7 @@
 #include <numeric>
 #include "corona.hpp"
 
+int tolerance = 0;
 
 int main(int argc, char* argv[])
 {
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
 
 
 
-	std::cout << "Parametres recuperes, Nombre de fichiers a traiter : " << nbFichiers << std::endl << "Option Fading : " << fading << std::endl << "Option Overlap : " << overlaps << std::endl << "Option Distance : " << distances << std::endl;
+	std::cout << "Parametres recuperes, Nombre de fichiers a traiter : " << nbFichiers << std::endl << "Option Fading : " << fading << std::endl << "Option Overlap : " << overlaps << std::endl << "Option Distance : " << distances << std::endl << "Option Tolerance : " << tolerance << std::endl;
 	tabImage = initImage(files); // Tableau comportant la liste d'images passe en parametres
 	int width = tabImage[0].getWidth(); //Largeur
 	int height = tabImage[0].getHeight(); //Hauteur

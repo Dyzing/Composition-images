@@ -9,6 +9,7 @@
 
 
 
+extern int tolerance;
 
 inline bool operator==(Pixels p, Pixels p2){
 	return p.red == p2.red && p.green == p2.green && p.blue == p2.blue;

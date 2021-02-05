@@ -29,22 +29,22 @@ int tailleConnexe(Pixels** tab, Pixels** copyTab, int height, int width, int x, 
 	int count = 0;
 	int i, j;
 	Pixels p;
-	while (!v.empty()) {
+	while (!v.empty()) {//tant qu'il y a des point dans notre pile
 		t = v.back();
 		v.pop_back();
 		i = std::get<0>(t);
 		j = std::get<1>(t);
 		p = tab[i][j];
-		if (!(p <= 1)) { //Petit test pour la tolérence au bruit
+		if (!(p <= tolerance)) { //si notre pixel n'est pas noir(plus ou moins la tolerance)
 			count += 1;
-			tab[i][j] = { 0,0,0 };
+			tab[i][j] = { 0,0,0 };//on met notre pixel en noir pour eviter d'y retourner
 
-			copyTab[i][j] = p;
+			copyTab[i][j] = p;//on copie le pixel
 			for (int n = -1; n < 2; n++) {
 				if (!(i + n > height - 1 or i + n < 0)) {
 					for (int k = -1; k < 2; k++) {
 						if (!(j + k > width - 1 or j + k < 0)) {
-							v.push_back(std::make_tuple(i + n, j + k));
+							v.push_back(std::make_tuple(i + n, j + k));//on empile les quatre coordoné autour de notre pixel (si elles sont dans l'image)
 						}
 					}
 				}
@@ -66,20 +66,21 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width) {
 	{
 		for (int j = 0; j < width; j++)
 		{
+			//pour chaque pixels de l'image
 			p = tab[i][j];
-			if (!(p.red <= 2 && p.green <= 2 && p.blue <= 2)) {
+			if (!(p <= tolerance)) {//si notre pixel n'est pas noir(plus ou moins la tolerance)
 				for (int k = 0; k < height; k++) {
 					for (int n = 0; n < width; n++) {
 						connex[k][n] = { 0, 0, 0};
 					}
 				}
-				taille = tailleConnexe(tab, connex, height, width, i, j);
-				if (taille > max) {
+				taille = tailleConnexe(tab, connex, height, width, i, j);//on recupere la composante et sa taille 
+				if (taille > max) {//si elle est plus grande que la plus grande
 					max = taille;
 					for (int k = 0; k < height; k++)
 					{
 						for (int n = 0; n < width; n++) {
-							connexMax[k][n] = connex[k][n];
+							connexMax[k][n] = connex[k][n];// on save la composante
 						}
 					}
 

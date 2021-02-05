@@ -43,6 +43,7 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 	for (int i = 0; i < height; i++) {
 
 		for (int j = 0; j < width; j++) {
+			// pour chaque pixel de l'image 
 
 			valR = {};
 			valG = {};
@@ -53,9 +54,9 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 				if (!(i + k > height - 1 || i + k < 0)) {
 
 					for (int n = -radius; n <= radius; n++) {
-
+						//pour tous les pixels dans le radius
 						if (!(j + n > width - 1 || j + n < 0)) {
-
+							// si les coordonnees sont dans l'image
 							valR.push_back(image[i + k][j + n].red);
 							valG.push_back(image[i + k][j + n].green);
 							valB.push_back(image[i + k][j + n].blue);
@@ -65,6 +66,7 @@ Pixels** filtre_median(Pixels** image, int width, int height, int radius) {
 				}
 			}
 
+			//recuperation du pixel median
 			valR.sort();
 			valB.sort();
 			valG.sort();
@@ -100,12 +102,14 @@ Pixels** median_images(Image* images, int nb, int width, int height) {
 	Pixels p;
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
+			// pour chaque pixel de l'image 
 			n = 0;
 			valR.clear();
 			valG.clear();
 			valB.clear();
 			std::list<int>::iterator it;
 			for (int x = 0; x < nb; ++x) {
+				//ajout des variation du meme pixel en fonction des image dans la liste
 				pixels = images[x].getTabPixels();
 				n += 1;
 				p = pixels[i][j];
@@ -114,6 +118,8 @@ Pixels** median_images(Image* images, int nb, int width, int height) {
 				valB.push_back(p.blue);
 				
 			}
+
+			//recuperation du pixel median
 			valR.sort();
 			valG.sort();
 			valB.sort();

@@ -50,8 +50,6 @@ Pixels** plusGrandConnexe(Pixels** tab, int height, int width);
 /// <param name="height">Hauteur</param>
 /// <returns>Resultat final comportant le fond + les sujets</returns>
 Pixels** MultiMasque(Pixels** Mediane, Image* Images, int nb, Pixels** fond, int width, int height);
-
-
 /// <summary>
 /// La moyenne de n Image. Le sujet est transparent
 /// </summary>

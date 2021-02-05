@@ -64,5 +64,6 @@ char* getCmdOption(char** begin, char** end, const std::string& option);
 /// <param name="files">Liste des fichiers qui sera mis a jour</param>
 /// <param name="fading">Option fading</param>
 /// <param name="overlap">Option overlap(Max de superpositions)</param>
-/// <param name="fading">Option distance(Distance entre 2 sujets)</param>
+/// <param name="distance">Option distance(Distance entre 2 sujets)</param>
+/// <param name="tolerance">tolerance du connexe</param>
 void getParams(int argc, char* argv[], std::list<std::string>& files, std::string& fading, int& overlap, int& distance, bool& parDefaut);

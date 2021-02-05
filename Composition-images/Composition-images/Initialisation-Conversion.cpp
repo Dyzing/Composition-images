@@ -134,6 +134,11 @@ void getParams(int argc, char* argv[], std::list<std::string>& files, std::strin
 		distance = std::stoi(distanceOpt);
 		parDefaut = false;
 	}
+	//Recuperation de l'option overlap
+	if (cmdOptionExists(argv, argv + argc, "-tolerance")) {
+		std::string toleranceOpt = getCmdOption(argv, argv + argc, "-tolerance");
+		tolerance = std::stoi(toleranceOpt);
+	}
 
 	
 }
